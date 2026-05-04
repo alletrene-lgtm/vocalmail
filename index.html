@@ -16,29 +16,17 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;}
 body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:-webkit-fill-available;display:flex;flex-direction:column;align-items:center;padding:calc(1rem + var(--safe-top)) 1rem calc(2rem + var(--safe-bottom));background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,189,248,.10) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 90%,rgba(129,140,248,.08) 0%,transparent 60%);-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-
-/* Skip link */
 .skip-link{position:absolute;top:-100px;left:1rem;background:var(--accent);color:#000;padding:.5rem 1rem;border-radius:8px;font-weight:700;z-index:999;transition:top .2s;}.skip-link:focus{top:1rem;}
-
-/* Header */
 header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 .logo{font-family:'Courier New',Consolas,monospace;font-size:clamp(1.4rem,6vw,2rem);font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.2rem;}
 .tagline{color:var(--muted);font-size:.82rem;font-weight:300;}
-
-/* Install banner */
 #install-banner{display:none;width:100%;max-width:600px;background:rgba(56,189,248,.10);border:1.5px solid var(--accent);border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:.85rem;color:var(--accent);text-align:center;line-height:1.5;}
 #install-banner button{margin-top:.5rem;padding:.4rem 1rem;border-radius:8px;border:none;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer;}
-
-/* Unsupported */
 #unsupported{display:none;width:100%;max-width:600px;background:rgba(248,113,113,.10);border:1.5px solid var(--red);border-radius:var(--radius);padding:1.2rem;text-align:center;color:var(--red);font-size:.95rem;line-height:1.6;margin-bottom:.8rem;}
-
-/* Config blocks */
 .config-block{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
 .config-block label{font-size:.78rem;color:var(--muted);width:100%;margin-bottom:.2rem;}
 .opt-btn{padding:.5rem .9rem;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:44px;-webkit-user-select:none;user-select:none;}
 .opt-btn:active,.opt-btn.selected{border-color:var(--accent);background:rgba(56,189,248,.12);color:var(--accent);}
-
-/* CSV */
 #csv-zone{width:100%;max-width:600px;margin-bottom:.8rem;}
 #csv-label{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:12px;border:1.5px dashed var(--border);background:var(--surface2);color:var(--muted);font-size:.88rem;font-family:inherit;font-weight:600;cursor:pointer;min-height:52px;-webkit-user-select:none;user-select:none;}
 #csv-label:active{border-color:var(--accent);color:var(--accent);}
@@ -47,27 +35,19 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 #csv-info.ok{color:var(--green);}#csv-info.err{color:var(--red);}
 #btn-clear-contacts{margin-top:.35rem;width:100%;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:.78rem;cursor:pointer;min-height:44px;}
 #btn-clear-contacts:active{color:var(--red);border-color:var(--red);}
-
-/* Status — tappable */
 #status-bar{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;font-size:1.05rem;font-weight:400;line-height:1.5;min-height:64px;display:flex;align-items:center;gap:.7rem;box-shadow:var(--glow);transition:border-color .3s;cursor:pointer;-webkit-user-select:none;user-select:none;}
 #status-bar:active{border-color:var(--accent);}
 #status-bar.listening{border-color:var(--red);box-shadow:0 0 32px rgba(248,113,113,.25);}
 #status-bar.success{border-color:var(--green);box-shadow:0 0 32px rgba(74,222,128,.18);}
 .status-icon{font-size:1.4rem;flex-shrink:0;}
-
-/* Steps */
 .steps-track{width:100%;max-width:600px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;position:relative;padding:0 .5rem;}
 .steps-track::before{content:'';position:absolute;left:2rem;right:2rem;top:50%;height:2px;background:var(--surface2);z-index:0;}
 .step-node{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--muted);position:relative;z-index:1;transition:all .3s;font-family:'Courier New',Consolas,monospace;}
 .step-node.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 0 20px rgba(56,189,248,.45);transform:scale(1.12);}
 .step-node.done{background:var(--green);border-color:var(--green);color:#000;}
 .step-label{position:absolute;bottom:-1.5rem;white-space:nowrap;font-size:.62rem;color:var(--muted);left:50%;transform:translateX(-50%);}
-
-/* Transcript & tip — masqués de TalkBack car VocalMail gère la voix */
 #transcript-live{width:100%;max-width:600px;font-size:.88rem;color:var(--amber);min-height:1.3rem;text-align:center;font-style:italic;margin-bottom:.5rem;}
 #tip-bar{width:100%;max-width:600px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:12px;padding:.75rem 1rem;font-size:.82rem;color:var(--accent2);margin-bottom:.8rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.5;}
-
-/* Favorites & Groups */
 #favorites-zone{display:none;width:100%;max-width:600px;margin-bottom:.5rem;}
 #groups-zone{display:none;width:100%;max-width:600px;margin-bottom:.8rem;}
 .zone-title{font-size:.78rem;font-weight:600;margin-bottom:.4rem;}
@@ -77,30 +57,22 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 .fav-btn:active{background:rgba(251,191,36,.25);}
 .grp-btn{border:1.5px solid rgba(129,140,248,.35);background:rgba(129,140,248,.08);color:var(--accent2);}
 .grp-btn:active{background:rgba(129,140,248,.25);}
-
-/* Contacts list */
 #contacts-list{width:100%;max-width:600px;display:none;flex-direction:column;gap:.4rem;margin-bottom:.8rem;}
 #contacts-list.visible{display:flex;}
 .contact-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:.6rem;min-height:56px;-webkit-user-select:none;user-select:none;}
 .contact-item:active{border-color:var(--accent);background:rgba(56,189,248,.08);}
 .contact-email{font-size:.75rem;color:var(--muted);margin-left:auto;}
-
-/* Text fallback */
 #text-fallback{display:none;width:100%;max-width:600px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;flex-direction:column;gap:.5rem;}
 #text-fallback.visible{display:flex;}
 #text-fallback label{font-size:.8rem;color:var(--muted);}
 #text-fallback input{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-family:inherit;font-size:1rem;color:var(--text);width:100%;outline:none;}
 #text-fallback input:focus{border-color:var(--accent);}
 #text-fallback button{padding:.7rem;border-radius:8px;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.9rem;border:none;cursor:pointer;min-height:44px;}
-
-/* Cards */
 .card{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;transition:border-color .3s,box-shadow .3s;}
 .card.active-card{border-color:var(--accent);box-shadow:var(--glow);}
 .card-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'Courier New',Consolas,monospace;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;}
 .card-value{font-size:1.05rem;font-weight:400;color:var(--text);min-height:1.5rem;word-break:break-word;}
 .card-value.placeholder{color:var(--muted);font-style:italic;font-size:.9rem;}
-
-/* Mic button — très grand pour usage tactile */
 #mic-btn{display:flex;align-items:center;justify-content:center;gap:.8rem;width:100%;max-width:600px;padding:1.6rem 2rem;font-size:1.2rem;font-family:inherit;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;margin-bottom:.8rem;transition:all .2s;min-height:80px;-webkit-user-select:none;user-select:none;}
 #mic-btn.idle{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;box-shadow:0 4px 32px rgba(56,189,248,.35);}
 #mic-btn.recording{background:var(--red);color:#fff;animation:pulse-btn 1s ease-in-out infinite;}
@@ -109,8 +81,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 .mic-icon{font-size:1.8rem;}
 #mic-btn.recording .mic-icon{animation:wobble .5s ease-in-out infinite alternate;}
 @keyframes wobble{from{transform:scale(1);}to{transform:scale(1.3) rotate(-10deg);}}
-
-/* Actions row */
 .actions-row{display:flex;gap:.5rem;width:100%;max-width:600px;margin-bottom:.8rem;flex-wrap:wrap;}
 .btn-sec{flex:1;padding:.75rem .5rem;border-radius:12px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;min-height:48px;min-width:56px;-webkit-user-select:none;user-select:none;}
 .btn-sec:active{border-color:var(--accent);color:var(--accent);}
@@ -120,31 +90,18 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 .btn-send{background:linear-gradient(135deg,#16a34a,#15803d);border-color:transparent;color:#fff;}
 .btn-send:active{background:#14532d;color:#fff;border-color:transparent;}
 .btn-send:disabled{background:var(--surface2);color:var(--muted);border-color:var(--border);}
-
-/* ARIA live regions — invisibles visuellement */
 #aria-announce{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 #aria-status{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 </style>
 </head>
-
-<!--
-  role="application" : indique à TalkBack que cette app gère
-  ses propres interactions vocales — TalkBack passe en mode
-  "touch exploration" moins intrusif
--->
 <body>
 <a class="skip-link" href="#mic-btn">Aller au microphone</a>
 
-<!--
-  Deux régions ARIA live séparées :
-  - aria-announce : messages importants (assertive) — interrompt TalkBack
-  - aria-status   : confirmations légères (polite) — attend la fin de TalkBack
--->
 <div id="aria-announce" aria-live="assertive" aria-atomic="true" role="alert"></div>
 <div id="aria-status"   aria-live="polite"    aria-atomic="true" role="status"></div>
 
 <header aria-hidden="true">
-  <div class="logo">📧 VocalMail</div>
+  <img src="logo_VocalMail.png" alt="VocalMail" style="width:180px;max-width:60%;margin-bottom:.5rem;border-radius:16px;">
   <p class="tagline">Composez et envoyez un e-mail entièrement à la voix</p>
 </header>
 
@@ -155,7 +112,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
 
 <div id="unsupported" role="alert"></div>
 
-<!-- CSV — aria-label explicite pour TalkBack -->
 <div id="csv-zone" aria-label="Importer les contacts">
   <label id="csv-label" for="csv-input" aria-label="Importer mes contacts depuis un fichier CSV">
     <span aria-hidden="true">📁</span> Importer mes contacts (CSV)
@@ -167,7 +123,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
   </button>
 </div>
 
-<!-- Messagerie -->
 <div class="config-block" role="group" aria-label="Choisir le client de messagerie">
   <label>📬 Envoyer via :</label>
   <button class="opt-btn selected" data-client="gmail"   onclick="setMailClient('gmail')"   aria-pressed="true"  aria-label="Gmail">🔴 Gmail</button>
@@ -176,7 +131,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
   <button class="opt-btn"          data-client="mailto"  onclick="setMailClient('mailto')"  aria-pressed="false" aria-label="Client mail local">📧 Local</button>
 </div>
 
-<!-- Écran de lancement -->
 <div id="launch-screen" style="width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;gap:1.2rem;margin-bottom:1rem;">
   <p style="font-size:1rem;color:var(--muted);text-align:center;line-height:1.6;" aria-hidden="true">
     Appuyez pour lancer VocalMail et dicter votre mail à la voix.
@@ -186,10 +140,8 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
   </button>
 </div>
 
-<!-- Interface principale (cachée au départ) -->
-<div id="main-app" style="display:none;width:100%;" role="application" aria-label="VocalMail — dictez votre mail">
+<div id="main-app" style="display:none;width:100%;" aria-label="VocalMail — dictez votre mail">
 
-  <!-- Barre de statut — tappable, gérée par VocalMail (pas TalkBack) -->
   <div id="status-bar"
        role="button"
        aria-label="Zone de statut — appuyez pour activer le microphone"
@@ -200,7 +152,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <span id="status-text">À qui voulez-vous envoyer un mail ?</span>
   </div>
 
-  <!-- Steps — aria-hidden car VocalMail annonce les étapes vocalement -->
   <nav class="steps-track" aria-hidden="true">
     <div class="step-node active" id="step-1">1<span class="step-label">Destinataire</span></div>
     <div class="step-node"        id="step-2">2<span class="step-label">Objet</span></div>
@@ -208,31 +159,25 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <div class="step-node"        id="step-4">4<span class="step-label">Envoi</span></div>
   </nav>
 
-  <!-- Transcript — aria-hidden : VocalMail parle, TalkBack n'a pas besoin de relire -->
   <div id="transcript-live" aria-hidden="true"></div>
 
-  <!-- Tip — aria-hidden : géré vocalement par VocalMail -->
   <div id="tip-bar" aria-hidden="true">
     <span aria-hidden="true">💡</span>
     <span id="tip-text"></span>
   </div>
 
-  <!-- Favoris -->
   <div id="favorites-zone" aria-hidden="true">
     <div class="zone-title" style="color:var(--amber);">⭐ Favoris</div>
     <div id="favorites-list"></div>
   </div>
 
-  <!-- Groupes -->
   <div id="groups-zone" aria-hidden="true">
     <div class="zone-title" style="color:var(--accent2);">👥 Mes groupes</div>
     <div id="groups-list"></div>
   </div>
 
-  <!-- Contacts — visible pour TalkBack quand une liste est proposée -->
   <div id="contacts-list" role="listbox" aria-label="Contacts trouvés — choisissez un contact" aria-live="polite"></div>
 
-  <!-- Fallback texte -->
   <div id="text-fallback" aria-label="Saisie manuelle">
     <label for="text-input">✏️ Saisie manuelle (si le micro ne fonctionne pas) :</label>
     <input type="text" id="text-input" autocomplete="off" autocorrect="off"
@@ -240,7 +185,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <button onclick="submitTextFallback()" aria-label="Valider la saisie">✅ Valider</button>
   </div>
 
-  <!-- Cards — lues par TalkBack si l'utilisateur explore -->
   <div class="card" id="card-to" aria-label="Destinataire">
     <div class="card-label" aria-hidden="true"><span aria-hidden="true">👤</span> À</div>
     <div class="card-value placeholder" id="val-to" aria-live="polite" aria-label="Destinataire : en attente">En attente…</div>
@@ -254,7 +198,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <div class="card-value placeholder" id="val-body" style="white-space:pre-wrap;" aria-live="polite" aria-label="Message : en attente">En attente…</div>
   </div>
 
-  <!-- Bouton microphone principal -->
   <button id="mic-btn" class="idle"
           aria-label="Activer le microphone pour dicter"
           aria-pressed="false">
@@ -262,7 +205,6 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <span id="mic-label">Appuyer pour dicter</span>
   </button>
 
-  <!-- Actions -->
   <div class="actions-row" role="group" aria-label="Actions">
     <button class="btn-sec btn-fav-action" onclick="quickReply()"  aria-label="Accès rapide aux favoris">⭐ Favoris</button>
     <button class="btn-sec btn-grp-action" onclick="listGroups()"  aria-label="Voir les groupes">👥 Groupes</button>
@@ -272,14 +214,11 @@ header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
     <button class="btn-sec btn-send"       id="btn-send" onclick="sendMail()"    disabled aria-label="Envoyer l'e-mail">📤 Envoyer</button>
   </div>
 
-</div><!-- fin #main-app -->
+</div>
 
 <script>
 'use strict';
 
-// ════════════════════════════════════════════
-// DONNÉES LOCALES
-// ════════════════════════════════════════════
 function lsGet(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
@@ -299,9 +238,6 @@ let FAVORITES = lsGet('vocalmail_favorites',[]);
 let GROUPS    = lsGet('vocalmail_groups',[]);
 let mailClient = lsGet('vocalmail_mail','gmail')||'gmail';
 
-// ════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════
 const STATE={step:1,to:null,toEmail:null,subject:null,body:null};
 let recognition=null, isListening=false;
 const synth=window.speechSynthesis;
@@ -312,43 +248,29 @@ let grpMode=null, grpPendingName='', grpPendingMembers=[], grpDeleteName='';
 
 const TIPS=[
   'Dites le nom ou prénom du destinataire. Ou dites "groupe" pour un groupe.',
-  'Dites l\'objet du mail. Ou dites "modifier le destinataire" pour corriger.',
+  'Dites l'objet du mail. Ou dites "modifier le destinataire" pour corriger.',
   'Dictez votre message. Dites "terminé" pour finir.',
-  'E-mail prêt. Dites "envoyer" — le micro reste ouvert.',
+  'E-mail prêt. Dites "envoyer" pour l'envoyer.',
 ];
 
-// ════════════════════════════════════════════
-// UTILITAIRES
-// ════════════════════════════════════════════
 const $=id=>document.getElementById(id);
 
 function norm(s){
-  return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  return(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
 }
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 
-// ════════════════════════════════════════════
-// ANNONCES ARIA — compatibles TalkBack
-// Deux niveaux : assertive (urgent) et polite (confirmation)
-// ════════════════════════════════════════════
 function ariaAssert(text){
-  // Interrompt TalkBack pour les messages importants
   const el=$('aria-announce');
   el.textContent='';
   requestAnimationFrame(()=>{el.textContent=text;});
 }
 function ariaPolite(text){
-  // Attend que TalkBack finisse avant d'annoncer
   const el=$('aria-status');
   el.textContent='';
   requestAnimationFrame(()=>{el.textContent=text;});
 }
 
-// ════════════════════════════════════════════
-// SYNTHÈSE VOCALE
-// VocalMail gère sa propre voix — on coupe la synthèse
-// de TalkBack via aria-hidden sur les zones dynamiques
-// ════════════════════════════════════════════
 function speak(text,onEnd){
   synth.cancel();
   const utt=new SpeechSynthesisUtterance(text);
@@ -357,15 +279,12 @@ function speak(text,onEnd){
   if(v) utt.voice=v;
   if(onEnd) utt.onend=onEnd;
   synth.speak(utt);
-  // Annoncer aussi via ARIA pour TalkBack (texte court)
-  ariaPolite(text);
 }
 
 function setStatus(text,icon='🎤',cls=''){
   $('status-text').textContent=text;
   document.querySelector('.status-icon').textContent=icon;
   $('status-bar').className=cls;
-  // Mettre à jour le aria-label du bouton status
   $('status-bar').setAttribute('aria-label',text+' — appuyez pour activer le microphone');
 }
 
@@ -373,9 +292,6 @@ function promptMic(delay=800){
   setTimeout(()=>{if(speechAvail&&!isListening)startListening();},delay);
 }
 
-// ════════════════════════════════════════════
-// PWA INSTALL
-// ════════════════════════════════════════════
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();deferredInstall=e;$('install-banner').style.display='block';
 });
@@ -386,9 +302,6 @@ function installPWA(){
   deferredInstall.userChoice.then(()=>{deferredInstall=null;$('install-banner').style.display='none';});
 }
 
-// ════════════════════════════════════════════
-// MESSAGERIE
-// ════════════════════════════════════════════
 function setMailClient(client){
   mailClient=client; lsSave('vocalmail_mail',client);
   document.querySelectorAll('[data-client]').forEach(b=>{
@@ -400,9 +313,6 @@ function setMailClient(client){
   speak(`Messagerie : ${labels[client]||client}.`);
 }
 
-// ════════════════════════════════════════════
-// LANCEMENT
-// ════════════════════════════════════════════
 function launchApp(){
   if(appLaunched)return;
   appLaunched=true;
@@ -419,13 +329,8 @@ function launchApp(){
   setStatus('À qui voulez-vous envoyer un mail ?','🎤');
   goToStep(1);
 
-  // Annoncer via ARIA d'abord (pour TalkBack)
   ariaAssert('VocalMail est lancé. Prêt à dicter un mail.');
-
-  // Puis parler et ouvrir le micro
   speak(msg,()=>setTimeout(()=>startListening(),300));
-
-  // Mettre le focus sur le bouton mic pour TalkBack
   setTimeout(()=>$('mic-btn').focus(),500);
 }
 
@@ -435,16 +340,11 @@ function onStatusTap(){
   startListening();
 }
 
-// ════════════════════════════════════════════
-// RECONNAISSANCE VOCALE
-// On suspend TalkBack pendant l'écoute via aria-hidden
-// sur le body (technique "application mode")
-// ════════════════════════════════════════════
 function initRecognition(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){
     $('unsupported').style.display='block';
-    $('unsupported').innerHTML='⚠️ Reconnaissance vocale non disponible. Utilisez <strong>Chrome</strong> sur Android ou <strong>Safari</strong> sur iPhone.';
+    $('unsupported').innerHTML='⚠️ Reconnaissance vocale non disponible.';
     $('text-fallback').classList.add('visible');
     $('mic-btn').style.display='none';
     return false;
@@ -462,9 +362,8 @@ function initRecognition(){
     $('mic-btn').setAttribute('aria-pressed','true');
     $('mic-btn').setAttribute('aria-label','Microphone actif — parlez maintenant');
     $('mic-label').textContent='Écoute…';
-    setStatus('J\'écoute… parlez maintenant.','🔴','listening');
-    // Annoncer à TalkBack que l'écoute est active
-    ariaAssert('Microphone actif. Parlez maintenant.');
+    setStatus('J'écoute… parlez maintenant.','🔴','listening');
+    ariaPolite('Microphone actif.');
   };
 
   recognition.onerror=e=>{
@@ -472,15 +371,12 @@ function initRecognition(){
     if(e.error==='no-speech'){
       setStatus('Aucune parole détectée. Réessayez.','🔇');
       ariaPolite('Aucune parole détectée.');
-      if(isMobile)$('text-fallback').classList.add('visible');
     }else if(e.error==='not-allowed'){
-      setStatus('Accès au micro refusé. Autorisez-le dans Chrome.','🚫');
-      speak('Accès au microphone refusé. Veuillez l\'autoriser dans les paramètres de Chrome.');
-      $('text-fallback').classList.add('visible');
+      setStatus('Accès au micro refusé.','🚫');
+      speak('Accès au microphone refusé.');
     }else{
-      setStatus('Erreur micro. Réessayez.','⚠️');
-      ariaPolite('Erreur microphone. Réessayez.');
-      if(isMobile)$('text-fallback').classList.add('visible');
+      setStatus('Erreur micro.','⚠️');
+      ariaPolite('Erreur microphone.');
     }
   };
 
@@ -518,7 +414,6 @@ function setupHandlers(){
   };
 }
 
-// listenOnce — attend la fin du speech avant d'écouter
 function listenOnce(callback,delay=400){
   const doListen=()=>{
     if(!recognition||!speechAvail)return;
@@ -536,15 +431,11 @@ function listenOnce(callback,delay=400){
   else doListen();
 }
 
-// Fallback texte
 function submitTextFallback(){
   const val=$('text-input').value.trim();if(!val)return;
   $('text-input').value='';processVoice(val.toLowerCase());
 }
 
-// ════════════════════════════════════════════
-// TRAITEMENT VOCAL CENTRAL
-// ════════════════════════════════════════════
 function processVoice(text){
   if(grpMode==='naming'){handleGrpName(text);return;}
   if(grpMode==='adding'){handleGrpMember(text);return;}
@@ -566,23 +457,19 @@ function processVoice(text){
     setupHandlers();return;
   }
 
-  // Commandes globales
   if(/^(recommencer|annuler tout|reset)/.test(text)){restart();return;}
-  if(/(envoyer|envoie|envoyer|envoi|oui|oui envoyer|je veux envoyer|go|send|valider|valide|confirmer|confirme|c'est bon|parfait|d'accord)/.test(text)&&STATE.step===4){sendMail();return;}
+  if(/(envoyer|envoie|oui|go|send|valider|confirmer|bon|parfait|accord)/.test(text)&&STATE.step===4){sendMail();return;}
   if(/^(relire|répéter|résumé|réécouter)/.test(text)&&STATE.step===4){readSummary();return;}
 
-  // Groupes
   if(/(créer|nouveau).*(groupe)/.test(text)){startGrpCreation();return;}
   if(/(supprimer|effacer|enlever).*(groupe)/.test(text)){askDeleteGroup(text);return;}
   if(/(voir|lister|mes).*(groupes)/.test(text)||/^groupes?$/.test(text)){listGroups();return;}
   if(/groupe/.test(text)&&STATE.step===1){selectGroupByVoice(text);return;}
 
-  // Favoris
   if(/(réponse rapide|favoris|raccourci)/.test(text)){quickReply();return;}
   if(/(ajouter|mettre).*(favori)/.test(text)){addFav();return;}
   if(/(retirer|enlever|supprimer).*(favori)/.test(text)){removeFav();return;}
 
-  // Corrections
   if(/(modifier|changer|corriger).*(destinataire|à qui|contact)/.test(text)){correctField(1);return;}
   if(/(modifier|changer|corriger).*(objet|sujet)/.test(text)){correctField(2);return;}
   if(/(modifier|changer|corriger).*(message|corps|texte)/.test(text)){correctField(3);return;}
@@ -594,9 +481,6 @@ function processVoice(text){
   }
 }
 
-// ════════════════════════════════════════════
-// ÉTAPES
-// ════════════════════════════════════════════
 function goToStep(n){
   STATE.step=n;
   for(let i=1;i<=4;i++){
@@ -610,11 +494,6 @@ function goToStep(n){
 }
 
 function markDone(n){$(`step-${n}`).className='step-node done';}
-
-// ════════════════════════════════════════════
-// RECHERCHE CONTACT
-// ════════════════════════════════════════════
-function norm2(s){return norm(s);}
 
 function searchContact(text){
   const q=norm(text);
@@ -639,7 +518,6 @@ function searchContact(text){
 function showContactList(contacts){
   const list=$('contacts-list');
   list.innerHTML='';
-  // Rendre la liste visible pour TalkBack
   list.removeAttribute('aria-hidden');
   contacts.forEach((c,i)=>{
     const btn=document.createElement('button');
@@ -663,7 +541,7 @@ function showContactList(contacts){
     if(num&&contacts[num-1]){selectContact(contacts[num-1]);}
     else{
       const match=contacts.find(c=>norm(c.name).includes(norm(final)));
-      if(match)selectContact(match);else speak('Je n\'ai pas compris. Dites le numéro.');
+      if(match)selectContact(match);else speak('Je n'ai pas compris. Dites le numéro.');
     }
     setupHandlers();
   };
@@ -678,44 +556,40 @@ function selectContact(contact){
   el.classList.remove('placeholder');
   el.setAttribute('aria-label',`Destinataire : ${contact.name}`);
   markDone(1);goToStep(2);
-  ariaPolite(`Destinataire : ${contact.name}. Étape suivante : objet du mail.`);
+  ariaPolite(`Destinataire : ${contact.name}.`);
   speak(`Parfait ! Destinataire : ${contact.name}. Dites l'objet du mail.`,()=>promptMic(300));
   setStatus(`✅ ${contact.name}`,'✅');
   setupHandlers();
   setTimeout(()=>$('mic-btn').focus(),200);
 }
 
-// ════════════════════════════════════════════
-// OBJET & MESSAGE
-// ════════════════════════════════════════════
 function saveSubject(text){
   STATE.subject=cap(text);
   const el=$('val-subject');
   el.textContent=STATE.subject;el.classList.remove('placeholder');
   el.setAttribute('aria-label',`Objet : ${STATE.subject}`);
   markDone(2);goToStep(3);
-  ariaPolite(`Objet enregistré : ${STATE.subject}. Étape suivante : message.`);
+  ariaPolite(`Objet enregistré.`);
   speak(`Objet : ${STATE.subject}. Dictez votre message, puis dites "terminé".`,()=>promptMic(400));
   setStatus(`✅ ${STATE.subject}`,'✅');
   setTimeout(()=>$('mic-btn').focus(),200);
 }
 
 function saveBody(text){
-  // Détecter "terminé" AVANT d'écrire
   if(/^(terminé|termine|terminer|fin|c'est tout|c'est fini|envoyer maintenant)$/.test(text)){
-    if(!STATE.body){speak('Le message est vide. Dictez votre message d\'abord.',()=>promptMic(600));return;}
+    if(!STATE.body){speak('Le message est vide. Dictez votre message d'abord.',()=>promptMic(600));return;}
     markDone(3);goToStep(4);readSummary();return;
   }
-  // Nettoyer "terminé" en fin de phrase
   const cleaned=text.replace(/[\.,\s]*(terminé|termine|terminer|fin|c'est tout|c'est fini)\s*$/i,'').trim();
   if(!cleaned){
-    if(!STATE.body){speak('Le message est vide. Dictez votre message d\'abord.',()=>promptMic(600));return;}
+    if(!STATE.body){speak('Le message est vide. Dictez votre message d'abord.',()=>promptMic(600));return;}
     markDone(3);goToStep(4);readSummary();return;
   }
   const msg=cleaned
-    .replace(/\bpoint\b/g,'.').replace(/\bvirgule\b/g,',')
-    .replace(/\bpoint d'exclamation\b/g,'!').replace(/\bpoint d'interrogation\b/g,'?')
-    .replace(/\bà la ligne\b/gi,'\n').replace(/\bdeux points\b/g,':');
+    .replace(/point/g,'.').replace(/virgule/g,',')
+    .replace(/point d'exclamation/g,'!').replace(/point d'interrogation/g,'?')
+    .replace(/à la ligne/gi,'
+').replace(/deux points/g,':');
   STATE.body=(STATE.body?STATE.body+' ':'')+msg;
   const el=$('val-body');
   el.textContent=STATE.body;el.classList.remove('placeholder');
@@ -725,65 +599,81 @@ function saveBody(text){
   speak('Enregistré. Continuez, ou dites "terminé" pour finir.',()=>promptMic(500));
 }
 
-// ════════════════════════════════════════════
-// RÉSUMÉ & ENVOI
-// ════════════════════════════════════════════
+let _sendListenerActive = false;
+
 function readSummary(){
-  const txt=`E-mail prêt. Destinataire : ${STATE.to}. Objet : ${STATE.subject}. Dites "envoyer" pour l'envoyer, ou appuyez sur le bouton Envoyer.`;
-  setStatus('✅ Dites "envoyer" — ou appuyez sur Envoyer.','✅','success');
-  $('btn-send').disabled=false;$('btn-copy').disabled=false;
-  for(let i=1;i<=4;i++){
-    $(`step-${i}`).className='step-node'+(i<4?' done':' active');
+  $('aria-announce').textContent = '';
+  $('aria-status').textContent = '';
+
+  const txt = `E-mail prêt. Destinataire : ${STATE.to}. Objet : ${STATE.subject}. Dites "envoyer" pour l'envoyer.`;
+  setStatus('✅ Dites "envoyer" — ou appuyez sur Envoyer', '✅', 'success');
+  $('btn-send').disabled = false;
+  $('btn-copy').disabled = false;
+
+  for(let i=1; i<=4; i++){
+    $(`step-${i}`).className = 'step-node' + (i<4 ? ' done' : ' active');
   }
-  $('tip-text').textContent=TIPS[3];
-  ariaAssert(`E-mail prêt. Destinataire : ${STATE.to}. Objet : ${STATE.subject}. Dites envoyer pour envoyer.`);
-  // Parler puis démarrer la boucle d'écoute persistante
-  speak(txt,()=>setTimeout(()=>listenForSend(),500));
-  setTimeout(()=>$('btn-send').focus(),200);
+  $('tip-text').textContent = TIPS[3];
+
+  // Annoncer via ARIA AVANT de parler pour que TalkBack soit informé
+  ariaAssert('E-mail prêt. Dites envoyer pour envoyer.');
+
+  speak(txt, () => {
+    // Délai plus long pour laisser TalkBack finir ses annonces de focus
+    setTimeout(() => listenForSend(), 1200);
+  });
 }
 
-// Boucle d'écoute persistante à l'étape 4 :
-// rouvre le micro automatiquement jusqu'à ce que l'utilisateur dise "envoyer"
-// ou quitte l'étape 4 (restart, correction, etc.)
-let _sendListenerActive=false;
 function listenForSend(){
-  if(STATE.step!==4||_sendListenerActive)return;
-  _sendListenerActive=true;
+  if(STATE.step !== 4 || _sendListenerActive) return;
+  _sendListenerActive = true;
+
+  // Retirer le focus de tous les éléments pour éviter que TalkBack
+  // n'intercepte la reconnaissance vocale
+  if(document.activeElement && document.activeElement !== document.body){
+    document.activeElement.blur();
+  }
+
   function doListen(){
-    if(STATE.step!==4){_sendListenerActive=false;return;}
-    if(isListening){setTimeout(doListen,800);return;}
-    // Rouvrir le micro si TalkBack a fini de parler
-    if(synth.speaking){
-      const t=setInterval(()=>{
-        if(!synth.speaking){clearInterval(t);
-          if(STATE.step===4&&!isListening)try{recognition.start();}catch(e){}
-        }
-      },200);
+    if(STATE.step !== 4){ _sendListenerActive = false; return; }
+    // Attendre que ni TalkBack ni la synthèse ne parlent
+    if(isListening || synth.speaking){
+      setTimeout(doListen, 600);
       return;
     }
-    try{recognition.start();}catch(e){}
-  }
-  // Premier lancement
-  doListen();
-  // Surveiller la fin de chaque session micro pour relancer automatiquement
-  const _origOnEnd=recognition.onend;
-  recognition.onend=function(){
-    stopListening();
-    if(STATE.step===4&&_sendListenerActive){
-      // Relancer l'écoute après un court délai
-      setTimeout(()=>{
-        if(STATE.step===4&&_sendListenerActive&&!isListening&&!synth.speaking){
-          try{recognition.start();}catch(e){}
+    try {
+      recognition.onresult = e => {
+        let interim = '', final = '';
+        for(let i = e.resultIndex; i < e.results.length; i++){
+          const t = e.results[i][0].transcript;
+          if(e.results[i].isFinal) final += t; else interim += t;
         }
-      },900);
+        $('transcript-live').textContent = interim || final;
+        if(final) processVoice(final.trim().toLowerCase());
+      };
+      recognition.start();
+      // Petit signal visuel/ARIA que le micro est ouvert
+      setStatus('🔴 Écoute… dites "envoyer"', '🔴', 'listening');
+    } catch(e) {
+      console.warn('listenForSend error:', e);
+    }
+  }
+
+  doListen();
+
+  // Si l'écoute s'arrête toute seule (timeout de Chrome), relancer
+  recognition.onend = function() {
+    stopListening();
+    if(STATE.step === 4 && _sendListenerActive) {
+      setTimeout(() => {
+        if(STATE.step === 4 && _sendListenerActive && !isListening && !synth.speaking){
+          doListen();
+        }
+      }, 1000);
+    } else {
+      setupHandlers();
     }
   };
-}
-
-// Arrêter la boucle d'envoi (appelé depuis restart / correctField)
-function stopSendListener(){
-  _sendListenerActive=false;
-  recognition.onend=stopListening;
 }
 
 function sendMail(){
@@ -802,53 +692,45 @@ function sendMail(){
       default:        url=`mailto:${emails}?subject=${STATE.subject||''}&body=${STATE.body||''}`;
     }
   }
-  ariaAssert(`Ouverture de ${mailClient} pour envoyer à ${STATE.to}.`);
-  speak(`Ouverture de votre messagerie pour envoyer à ${STATE.to}.`);
+  speak(`Ouverture de votre messagerie.`);
   setStatus(`📤 Envoi à ${STATE.to}…`,'📤','success');
   setTimeout(()=>{window.location.href=url;},800);
 }
 
 function copyMessage(){
-  const text=`À : ${STATE.toEmail}\nObjet : ${STATE.subject}\n\n${STATE.body}`;
+  const text=`À : ${STATE.toEmail}
+Objet : ${STATE.subject}
+
+${STATE.body}`;
   navigator.clipboard.writeText(text).then(()=>{
-    ariaPolite('Message copié dans le presse-papiers.');
-    speak('Message copié. Ouvrez Gmail et collez le message.');
+    ariaPolite('Message copié.');
+    speak('Message copié.');
     setStatus('📋 Message copié !','📋','success');
     const btn=$('btn-copy');btn.textContent='✅ Copié !';
     setTimeout(()=>{btn.textContent='📋 Copier';},3000);
   }).catch(()=>setStatus('Copie non disponible.','⚠️'));
 }
 
-// ════════════════════════════════════════════
-// CORRECTION
-// ════════════════════════════════════════════
 function correctField(n){
-  stopSendListener();
+  _sendListenerActive = false;
   const ids={1:'val-to',2:'val-subject',3:'val-body'};
   const names={1:'destinataire',2:'objet',3:'message'};
-  const prompts={1:'Dites le nom du nouveau destinataire.',2:'Dites le nouvel objet.',3:'Dictez votre nouveau message. Dites "terminé" quand vous avez fini.'};
+  const prompts={1:'Dites le nom du nouveau destinataire.',2:'Dites le nouvel objet.',3:'Dictez votre nouveau message.'};
   if(n===1){STATE.to=null;STATE.toEmail=null;}
   if(n===2){STATE.subject=null;}
   if(n===3){STATE.body=null;}
   const el=$(ids[n]);el.textContent='En attente…';el.classList.add('placeholder');
   $('btn-send').disabled=true;$('btn-copy').disabled=true;
   goToStep(n);
-  const ctx=[];
-  if(n>1&&STATE.to)ctx.push(`Destinataire : ${STATE.to}`);
-  if(n>2&&STATE.subject)ctx.push(`Objet : ${STATE.subject}`);
-  const ctxStr=ctx.length?ctx.join(', ')+'. ':'';
   ariaAssert(`Correction du ${names[n]}.`);
-  speak(`Correction du ${names[n]}. ${ctxStr}${prompts[n]}`,()=>promptMic(400));
+  speak(`Correction du ${names[n]}. ${prompts[n]}`,()=>promptMic(400));
   setStatus(`✏️ Correction du ${names[n]}`,'✏️');
   setupHandlers();
   setTimeout(()=>$('mic-btn').focus(),200);
 }
 
-// ════════════════════════════════════════════
-// RESTART / SKIP
-// ════════════════════════════════════════════
 function restart(){
-  stopSendListener();
+  _sendListenerActive = false;
   STATE.step=1;STATE.to=null;STATE.toEmail=null;STATE.subject=null;STATE.body=null;
   ['val-to','val-subject','val-body'].forEach(id=>{
     $(id).textContent='En attente…';$(id).className='card-value placeholder';
@@ -859,7 +741,7 @@ function restart(){
   synth.cancel();if(isListening)recognition?.stop();
   goToStep(1);
   setStatus('À qui voulez-vous envoyer un mail ?','🎤');
-  ariaAssert('Recommencer. À qui voulez-vous envoyer un mail ?');
+  ariaAssert('Recommencer.');
   speak('Recommençons. À qui voulez-vous envoyer un mail ?',()=>promptMic(400));
   setTimeout(()=>$('mic-btn').focus(),200);
 }
@@ -871,21 +753,18 @@ function skipStep(){
   speak(TIPS[STATE.step-1]);
 }
 
-// ════════════════════════════════════════════
-// FAVORIS
-// ════════════════════════════════════════════
 function addFav(){
-  if(!STATE.to||!STATE.toEmail){speak('Sélectionnez d\'abord un destinataire.');return;}
+  if(!STATE.to||!STATE.toEmail){speak('Sélectionnez d'abord un destinataire.');return;}
   if(FAVORITES.find(f=>f.email===STATE.toEmail)){speak(`${STATE.to} est déjà dans vos favoris.`);return;}
   if(FAVORITES.length>=8){speak('Maximum 8 favoris.');return;}
   FAVORITES.push({name:STATE.to,email:STATE.toEmail});
   lsSave('vocalmail_favorites',FAVORITES);renderFavorites();
   ariaPolite(`${STATE.to} ajouté aux favoris.`);
-  speak(`${STATE.to} ajouté aux favoris. Vous avez ${FAVORITES.length} favori${FAVORITES.length>1?'s':''}.`);
+  speak(`${STATE.to} ajouté aux favoris.`);
 }
 
 function removeFav(){
-  if(!STATE.toEmail){speak('Sélectionnez d\'abord un destinataire.');return;}
+  if(!STATE.toEmail){speak('Sélectionnez d'abord un destinataire.');return;}
   const idx=FAVORITES.findIndex(f=>f.email===STATE.toEmail);
   if(idx===-1){speak(`${STATE.to} n'est pas dans vos favoris.`);return;}
   FAVORITES.splice(idx,1);lsSave('vocalmail_favorites',FAVORITES);renderFavorites();
@@ -908,11 +787,11 @@ function renderFavorites(){
 
 function quickReply(){
   if(FAVORITES.length===0){
-    speak('Pas encore de favoris. Choisissez un contact et dites "ajouter aux favoris".');return;
+    speak('Pas encore de favoris.');return;
   }
   const names=FAVORITES.map((f,i)=>`${i+1} : ${f.name.split(' ')[0]}`).join(', ');
   ariaAssert(`${FAVORITES.length} favoris disponibles.`);
-  speak(`Réponse rapide. ${FAVORITES.length} favori${FAVORITES.length>1?'s':''} : ${names}. Dites le numéro.`);
+  speak(`Réponse rapide. ${FAVORITES.length} favoris : ${names}. Dites le numéro.`);
   setStatus('⭐ Favoris — dites le numéro.','⭐');
   if(!recognition)return;
   const nw={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8};
@@ -926,16 +805,13 @@ function quickReply(){
     if(num&&FAVORITES[num-1]){selectContact(FAVORITES[num-1]);}
     else{
       const match=FAVORITES.find(f=>norm(f.name).includes(norm(final)));
-      if(match)selectContact(match);else{speak('Je n\'ai pas compris. Dites le numéro.');promptMic(600);}
+      if(match)selectContact(match);else{speak('Je n'ai pas compris.');promptMic(600);}
     }
     setupHandlers();
   };
   promptMic(500);
 }
 
-// ════════════════════════════════════════════
-// GROUPES
-// ════════════════════════════════════════════
 function renderGroups(){
   const zone=$('groups-zone'),list=$('groups-list');
   if(GROUPS.length===0){zone.style.display='none';return;}
@@ -943,7 +819,7 @@ function renderGroups(){
   GROUPS.forEach((g,i)=>{
     const btn=document.createElement('button');
     btn.className='grp-btn';
-    btn.setAttribute('aria-label',`Groupe ${g.name} — ${g.members.length} membres`);
+    btn.setAttribute('aria-label',`Groupe ${g.name}`);
     btn.textContent=`👥 ${g.name}`;
     btn.addEventListener('click',()=>selectGroup(g));
     list.appendChild(btn);
@@ -955,12 +831,12 @@ function selectGroup(group){
   const names=group.members.map(m=>m.name.split(' ')[0]).join(', ');
   STATE.to=`Groupe : ${group.name}`;STATE.toEmail=emails;
   const el=$('val-to');
-  el.textContent=`👥 ${group.name} (${group.members.length} membre${group.members.length>1?'s':''})`;
+  el.textContent=`👥 ${group.name} (${group.members.length} membres)`;
   el.classList.remove('placeholder');
-  el.setAttribute('aria-label',`Destinataires : groupe ${group.name}, ${group.members.length} membres`);
+  el.setAttribute('aria-label',`Destinataires : groupe ${group.name}`);
   markDone(1);goToStep(2);
-  ariaPolite(`Groupe ${group.name} sélectionné. ${group.members.length} destinataires.`);
-  speak(`Groupe "${group.name}" sélectionné. ${group.members.length} destinataire${group.members.length>1?'s':''} : ${names}. Dites l'objet du mail.`,()=>promptMic(300));
+  ariaPolite(`Groupe ${group.name} sélectionné.`);
+  speak(`Groupe "${group.name}" sélectionné. Dites l'objet du mail.`,()=>promptMic(300));
   setStatus(`👥 ${group.name}`,'👥');
   setupHandlers();
   setTimeout(()=>$('mic-btn').focus(),200);
@@ -968,21 +844,21 @@ function selectGroup(group){
 
 function listGroups(){
   if(GROUPS.length===0){
-    speak('Vous n\'avez pas encore de groupes. Dites "créer un groupe" pour commencer.');return;
+    speak('Vous n'avez pas encore de groupes.');return;
   }
   const names=GROUPS.map((g,i)=>`${i+1} : ${g.name}`).join(', ');
   ariaAssert(`${GROUPS.length} groupes disponibles.`);
-  speak(`${GROUPS.length} groupe${GROUPS.length>1?'s':''} : ${names}. Dites le numéro ou le nom.`,()=>{
+  speak(`${GROUPS.length} groupes : ${names}. Dites le numéro ou le nom.`,()=>{
     listenOnce(final=>{
       const nw={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8};
       const num=nw[final]||parseInt(final);
       if(num&&GROUPS[num-1]){selectGroup(GROUPS[num-1]);return;}
       const match=GROUPS.find(g=>norm(g.name).includes(norm(final))||norm(final).includes(norm(g.name)));
       if(match){selectGroup(match);return;}
-      speak('Je n\'ai pas compris.');setupHandlers();
+      speak('Je n'ai pas compris.');setupHandlers();
     });
   });
-  setStatus(`👥 ${GROUPS.length} groupe${GROUPS.length>1?'s':''}`,'👥');
+  setStatus(`👥 ${GROUPS.length} groupes`,'👥');
 }
 
 function selectGroupByVoice(text){
@@ -990,23 +866,22 @@ function selectGroupByVoice(text){
   if(!q){listGroups();return;}
   const match=GROUPS.find(g=>norm(g.name).includes(norm(q))||norm(q).includes(norm(g.name)));
   if(match)selectGroup(match);
-  else speak(`Groupe "${q}" non trouvé. Dites "voir mes groupes" pour la liste.`);
+  else speak(`Groupe "${q}" non trouvé.`);
 }
 
 function startGrpCreation(){
   grpMode='naming';grpPendingName='';grpPendingMembers=[];
-  setStatus('👥 Création de groupe — dites le nom du groupe.','👥');
-  ariaAssert('Création de groupe. Dites le nom du groupe.');
-  speak('Création d\'un groupe. Quel est le nom de ce groupe ?',()=>{
+  setStatus('👥 Création de groupe','👥');
+  ariaAssert('Création de groupe.');
+  speak('Création d'un groupe. Quel est le nom de ce groupe ?',()=>{
     listenOnce(text=>handleGrpName(text));
   });
 }
 
 function handleGrpName(text){
   grpPendingName=cap(text);grpMode='adding';
-  setStatus(`👥 Groupe "${grpPendingName}" — ajoutez les membres.`,'👥');
-  ariaAssert(`Groupe "${grpPendingName}". Dites le nom du premier membre.`);
-  speak(`Groupe "${grpPendingName}". Dites le nom du premier membre. Dites "terminé" quand vous avez fini.`,()=>{
+  setStatus(`👥 Groupe "${grpPendingName}"`,'👥');
+  speak(`Groupe "${grpPendingName}". Dites le nom du premier membre.`,()=>{
     listenOnce(text=>handleGrpMember(text));
   });
 }
@@ -1014,15 +889,15 @@ function handleGrpName(text){
 function handleGrpMember(text){
   if(/^(terminé|termine|fin|c'est tout|c'est fini)$/.test(text)){
     if(grpPendingMembers.length===0){
-      speak('Le groupe est vide. Ajoutez au moins un membre.',()=>listenOnce(t=>handleGrpMember(t)));return;
+      speak('Le groupe est vide.',()=>listenOnce(t=>handleGrpMember(t)));return;
     }
     const ng={name:grpPendingName,members:[...grpPendingMembers]};
     const idx=GROUPS.findIndex(g=>norm(g.name)===norm(grpPendingName));
     if(idx!==-1)GROUPS.splice(idx,1);
     GROUPS.push(ng);lsSave('vocalmail_groups',GROUPS);renderGroups();
     grpMode=null;grpPendingName='';grpPendingMembers=[];
-    ariaAssert(`Groupe "${ng.name}" créé avec ${ng.members.length} membres.`);
-    speak(`Groupe "${ng.name}" créé avec ${ng.members.length} membre${ng.members.length>1?'s':''}. Dites "groupe ${ng.name}" pour l'utiliser.`);
+    ariaAssert(`Groupe "${ng.name}" créé.`);
+    speak(`Groupe "${ng.name}" créé.`);
     setStatus(`✅ Groupe "${ng.name}" créé.`,'✅','success');
     setupHandlers();
     setTimeout(()=>$('mic-btn').focus(),200);
@@ -1035,17 +910,16 @@ function handleGrpMember(text){
     return words.some(w=>w.length>=2&&(cn.includes(w)||ce.includes(w)))||cn===q;
   });
   if(matches.length===0){
-    speak(`Pas trouvé : "${text}". Dites juste le prénom ou le nom.`,()=>listenOnce(t=>handleGrpMember(t)));return;
+    speak(`Pas trouvé. Dites un autre nom.`,()=>listenOnce(t=>handleGrpMember(t)));return;
   }
   const contact=matches[0];
   if(grpPendingMembers.find(m=>m.email===contact.email)){
-    speak(`${contact.name} est déjà dans ce groupe. Dites un autre nom.`,()=>listenOnce(t=>handleGrpMember(t)));return;
+    speak(`${contact.name} est déjà présent.`,()=>listenOnce(t=>handleGrpMember(t)));return;
   }
   grpPendingMembers.push(contact);
   const n=grpPendingMembers.length;
-  setStatus(`👥 "${grpPendingName}" — ${n} membre${n>1?'s':''}`,'👥');
-  ariaPolite(`${contact.name} ajouté. ${n} membre${n>1?'s':'dans le groupe.'}`);
-  speak(`${contact.name} ajouté. ${n} membre${n>1?'s':''}. Dites un autre nom, ou "terminé" pour finir.`,()=>listenOnce(t=>handleGrpMember(t)));
+  ariaPolite(`${contact.name} ajouté.`);
+  speak(`${contact.name} ajouté. Dites un autre nom, ou "terminé".`,()=>listenOnce(t=>handleGrpMember(t)));
 }
 
 function askDeleteGroup(text){
@@ -1053,41 +927,37 @@ function askDeleteGroup(text){
   const match=GROUPS.find(g=>norm(g.name).includes(norm(q))||norm(q).includes(norm(g.name)));
   if(!match){listGroups();return;}
   grpDeleteName=match.name;grpMode='deleting';
-  ariaAssert(`Supprimer le groupe "${match.name}" ?`);
-  speak(`Voulez-vous supprimer le groupe "${match.name}" ? Dites "confirmer" pour valider.`,()=>{
+  speak(`Voulez-vous supprimer le groupe "${match.name}" ? Dites "confirmer".`,()=>{
     listenOnce(final=>{
       grpMode=null;
       if(/^(confirmer|oui|supprimer|effacer)/.test(final)){
         const idx=GROUPS.findIndex(g=>g.name===grpDeleteName);
         if(idx!==-1){GROUPS.splice(idx,1);lsSave('vocalmail_groups',GROUPS);renderGroups();}
-        ariaAssert(`Groupe "${grpDeleteName}" supprimé.`);
         speak(`Groupe "${grpDeleteName}" supprimé.`);
-      }else speak('Annulé. Le groupe est conservé.');
+      }else speak('Annulé.');
       grpDeleteName='';setupHandlers();
     });
   });
-  setStatus(`⚠️ Supprimer "${match.name}" ? Dites "confirmer".`,'⚠️');
+  setStatus(`⚠️ Supprimer "${match.name}" ?`,'⚠️');
 }
 
-// ════════════════════════════════════════════
-// CSV
-// ════════════════════════════════════════════
 function parseCSV(text){
-  const lines=text.split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return[];
+  const lines=text.split(/
+?
+/).filter(l=>l.trim());if(lines.length<2)return[];
   const sep=lines[0].includes(';')?';':',';
-  const headers=lines[0].split(sep).map(h=>h.replace(/["\r]/g,'').trim().toLowerCase());
+  const headers=lines[0].split(sep).map(h=>h.replace(/["
+]/g,'').trim().toLowerCase());
   const emailIdx=headers.findIndex(h=>['email','e-mail','mail','adresse','address','smtp'].some(k=>h.includes(k)));
   const nameIdx=headers.findIndex(h=>['name','nom','display name','full name','nom complet','given name'].some(k=>h.includes(k)));
   if(emailIdx===-1)return null;
   const result=[];
   for(let i=1;i<lines.length;i++){
     const cols=lines[i].match(/(".*?"|[^,;]+)(?=[,;]|$)/g)||lines[i].split(sep);
-    const clean=c=>(c||'').replace(/["\r]/g,'').trim();
+    const clean=c=>(c||'').replace(/["
+]/g,'').trim();
     const email=clean(cols[emailIdx]);if(!email||!email.includes('@'))continue;
     let name=nameIdx!==-1?clean(cols[nameIdx]):'';
-    const fi=headers.findIndex(h=>h.includes('first')||h.includes('prénom'));
-    const li=headers.findIndex(h=>h.includes('last')||h.includes('surname'));
-    if(!name&&fi!==-1&&li!==-1)name=[clean(cols[fi]),clean(cols[li])].filter(Boolean).join(' ');
     if(!name)name=email.split('@')[0];
     result.push({name,email});
   }
@@ -1099,7 +969,7 @@ function initCSVImport(){
   if(saved){
     try{
       const n=JSON.parse(saved).length;
-      $('csv-info').textContent=`✅ ${n} contact${n>1?'s':''} mémorisé${n>1?'s':''}`;
+      $('csv-info').textContent=`✅ ${n} contacts mémorisés`;
       $('csv-info').className='ok';
     }catch(e){}
   }
@@ -1108,16 +978,12 @@ function initCSVImport(){
     const reader=new FileReader();
     reader.onload=ev=>{
       const result=parseCSV(ev.target.result);
-      const info=$('csv-info');
-      if(!result){info.textContent='❌ Format non reconnu.';info.className='err';return;}
-      if(result.length===0){info.textContent='⚠️ Aucun contact valide.';info.className='err';return;}
+      if(!result)return;
       const existing=new Set(CONTACTS.map(c=>c.email.toLowerCase()));
       CONTACTS.unshift(...result.filter(c=>!existing.has(c.email.toLowerCase())));
       lsSave('vocalmail_contacts',CONTACTS);
-      info.textContent=`✅ ${result.length} contact${result.length>1?'s':''} importé${result.length>1?'s':''}`;
-      info.className='ok';
-      ariaPolite(`${result.length} contacts importés et mémorisés.`);
-      speak(`${result.length} contact${result.length>1?'s importés et mémorisés':' importé et mémorisé'}.`);
+      ariaPolite(`${result.length} contacts importés.`);
+      speak(`${result.length} contacts importés.`);
     };
     reader.readAsText(file,'UTF-8');
   });
@@ -1125,29 +991,22 @@ function initCSVImport(){
 
 function clearContacts(confirmed=false){
   if(!confirmed){
-    speak('Dites "confirmer" pour effacer tous vos contacts importés.');
+    speak('Dites "confirmer" pour effacer vos contacts.');
     setStatus('Dites "confirmer" pour effacer.','⚠️');
     waitingConfirmClear=true;promptMic(800);return;
   }
   try{localStorage.removeItem('vocalmail_contacts');}catch(e){}
   CONTACTS.length=0;CONTACTS.push(...DEFAULT_CONTACTS);
-  $('csv-info').textContent='Compatible Gmail, Outlook, Yahoo';$('csv-info').className='';
   ariaPolite('Contacts réinitialisés.');
-  speak('Contacts réinitialisés.');setStatus('Contacts réinitialisés.','🎤');
+  speak('Contacts réinitialisés.');
 }
 
-// ════════════════════════════════════════════
-// SERVICE WORKER
-// ════════════════════════════════════════════
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e));
   });
 }
 
-// ════════════════════════════════════════════
-// INITIALISATION
-// ════════════════════════════════════════════
 window.addEventListener('load',()=>{
   initRecognition();
   initCSVImport();
@@ -1155,7 +1014,6 @@ window.addEventListener('load',()=>{
   renderFavorites();
   renderGroups();
 
-  // Appliquer messagerie sauvegardée
   document.querySelectorAll('[data-client]').forEach(b=>{
     const a=b.dataset.client===mailClient;
     b.classList.toggle('selected',a);
@@ -1174,12 +1032,9 @@ window.addEventListener('load',()=>{
 
   synth.getVoices();
   window.speechSynthesis.onvoiceschanged=()=>synth.getVoices();
-
   goToStep(1);
-
-  // Annoncer la disponibilité de l'app pour TalkBack
   setTimeout(()=>{
-    ariaPolite('VocalMail prêt. Appuyez sur le bouton Lancer VocalMail pour commencer.');
+    ariaPolite('VocalMail prêt. Appuyez sur le bouton Lancer VocalMail.');
   },500);
 });
 </script>
