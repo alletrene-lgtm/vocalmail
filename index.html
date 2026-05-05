@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#38bdf8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VocalMail">
+<meta name="description" content="Composez et envoyez des e-mails entièrement à la voix">
+<link rel="manifest" href="manifest.json">
+<title>VocalMail</title>
+<style>
+:root{--bg:#0a0f1e;--surface:#111827;--surface2:#1a2440;--accent:#38bdf8;--accent2:#818cf8;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--text:#f0f6ff;--muted:#6b7280;--border:rgba(56,189,248,0.18);--glow:0 0 32px rgba(56,189,248,0.18);--radius:18px;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:-webkit-fill-available;display:flex;flex-direction:column;align-items:center;padding:calc(1rem + var(--safe-top)) 1rem calc(2rem + var(--safe-bottom));background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,189,248,.10) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 90%,rgba(129,140,248,.08) 0%,transparent 60%);-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.skip-link{position:absolute;top:-100px;left:1rem;background:var(--accent);color:#000;padding:.5rem 1rem;border-radius:8px;font-weight:700;z-index:999;transition:top .2s;}.skip-link:focus{top:1rem;}
+header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
+.logo{font-family:'Courier New',Consolas,monospace;font-size:clamp(1.4rem,6vw,2rem);font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.2rem;}
+.tagline{color:var(--muted);font-size:.82rem;font-weight:300;}
+#install-banner{display:none;width:100%;max-width:600px;background:rgba(56,189,248,.10);border:1.5px solid var(--accent);border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:.85rem;color:var(--accent);text-align:center;line-height:1.5;}
+#install-banner button{margin-top:.5rem;padding:.4rem 1rem;border-radius:8px;border:none;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer;}
+#unsupported{display:none;width:100%;max-width:600px;background:rgba(248,113,113,.10);border:1.5px solid var(--red);border-radius:var(--radius);padding:1.2rem;text-align:center;color:var(--red);font-size:.95rem;line-height:1.6;margin-bottom:.8rem;}
+.config-block{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.config-block label{font-size:.78rem;color:var(--muted);width:100%;margin-bottom:.2rem;}
+.opt-btn{padding:.5rem .9rem;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:44px;-webkit-user-select:none;user-select:none;}
+.opt-btn:active,.opt-btn.selected{border-color:var(--accent);background:rgba(56,189,248,.12);color:var(--accent);}
+#csv-zone{width:100%;max-width:600px;margin-bottom:.8rem;}
+#csv-label{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:12px;border:1.5px dashed var(--border);background:var(--surface2);color:var(--muted);font-size:.88rem;font-family:inherit;font-weight:600;cursor:pointer;min-height:52px;-webkit-user-select:none;user-select:none;}
+#csv-label:active{border-color:var(--accent);color:var(--accent);}
+#csv-input{display:none;}
+#csv-info{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.3rem;min-height:1.1rem;}
+#csv-info.ok{color:var(--green);}#csv-info.err{color:var(--red);}
+#btn-clear-contacts{margin-top:.35rem;width:100%;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:.78rem;cursor:pointer;min-height:44px;}
+#btn-clear-contacts:active{color:var(--red);border-color:var(--red);}
+#status-bar{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;font-size:1.05rem;font-weight:400;line-height:1.5;min-height:64px;display:flex;align-items:center;gap:.7rem;box-shadow:var(--glow);transition:border-color .3s;cursor:pointer;-webkit-user-select:none;user-select:none;}
+#status-bar:active{border-color:var(--accent);}
+#status-bar.listening{border-color:var(--red);box-shadow:0 0 32px rgba(248,113,113,.25);}
+#status-bar.success{border-color:var(--green);box-shadow:0 0 32px rgba(74,222,128,.18);}
+.status-icon{font-size:1.4rem;flex-shrink:0;}
+.steps-track{width:100%;max-width:600px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;position:relative;padding:0 .5rem;}
+.steps-track::before{content:'';position:absolute;left:2rem;right:2rem;top:50%;height:2px;background:var(--surface2);z-index:0;}
+.step-node{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--muted);position:relative;z-index:1;transition:all .3s;font-family:'Courier New',Consolas,monospace;}
+.step-node.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 0 20px rgba(56,189,248,.45);transform:scale(1.12);}
+.step-node.done{background:var(--green);border-color:var(--green);color:#000;}
+.step-label{position:absolute;bottom:-1.5rem;white-space:nowrap;font-size:.62rem;color:var(--muted);left:50%;transform:translateX(-50%);}
+#transcript-live{width:100%;max-width:600px;font-size:.88rem;color:var(--amber);min-height:1.3rem;text-align:center;font-style:italic;margin-bottom:.5rem;}
+#tip-bar{width:100%;max-width:600px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:12px;padding:.75rem 1rem;font-size:.82rem;color:var(--accent2);margin-bottom:.8rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.5;}
+#favorites-zone{display:none;width:100%;max-width:600px;margin-bottom:.5rem;}
+#groups-zone{display:none;width:100%;max-width:600px;margin-bottom:.8rem;}
+.zone-title{font-size:.78rem;font-weight:600;margin-bottom:.4rem;}
+#favorites-list,#groups-list{display:flex;flex-wrap:wrap;gap:.5rem;}
+.fav-btn,.grp-btn{padding:.55rem 1rem;border-radius:20px;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;min-height:44px;-webkit-user-select:none;user-select:none;}
+.fav-btn{border:1.5px solid rgba(251,191,36,.35);background:rgba(251,191,36,.08);color:var(--amber);}
+.fav-btn:active{background:rgba(251,191,36,.25);}
+.grp-btn{border:1.5px solid rgba(129,140,248,.35);background:rgba(129,140,248,.08);color:var(--accent2);}
+.grp-btn:active{background:rgba(129,140,248,.25);}
+#contacts-list{width:100%;max-width:600px;display:none;flex-direction:column;gap:.4rem;margin-bottom:.8rem;}
+#contacts-list.visible{display:flex;}
+.contact-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:.6rem;min-height:56px;-webkit-user-select:none;user-select:none;}
+.contact-item:active{border-color:var(--accent);background:rgba(56,189,248,.08);}
+.contact-email{font-size:.75rem;color:var(--muted);margin-left:auto;}
+#text-fallback{display:none;width:100%;max-width:600px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;flex-direction:column;gap:.5rem;}
+#text-fallback.visible{display:flex;}
+#text-fallback label{font-size:.8rem;color:var(--muted);}
+#text-fallback input{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-family:inherit;font-size:1rem;color:var(--text);width:100%;outline:none;}
+#text-fallback input:focus{border-color:var(--accent);}
+#text-fallback button{padding:.7rem;border-radius:8px;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.9rem;border:none;cursor:pointer;min-height:44px;}
+.card{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;transition:border-color .3s,box-shadow .3s;}
+.card.active-card{border-color:var(--accent);box-shadow:var(--glow);}
+.card-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'Courier New',Consolas,monospace;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;}
+.card-value{font-size:1.05rem;font-weight:400;color:var(--text);min-height:1.5rem;word-break:break-word;}
+.card-value.placeholder{color:var(--muted);font-style:italic;font-size:.9rem;}
+#mic-btn{display:flex;align-items:center;justify-content:center;gap:.8rem;width:100%;max-width:600px;padding:1.6rem 2rem;font-size:1.2rem;font-family:inherit;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;margin-bottom:.8rem;transition:all .2s;min-height:80px;-webkit-user-select:none;user-select:none;}
+#mic-btn.idle{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;box-shadow:0 4px 32px rgba(56,189,248,.35);}
+#mic-btn.recording{background:var(--red);color:#fff;animation:pulse-btn 1s ease-in-out infinite;}
+#mic-btn:disabled{background:var(--surface2);color:var(--muted);box-shadow:none;}
+@keyframes pulse-btn{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.5);}50%{box-shadow:0 0 0 20px rgba(248,113,113,0);}}
+.mic-icon{font-size:1.8rem;}
+#mic-btn.recording .mic-icon{animation:wobble .5s ease-in-out infinite alternate;}
+@keyframes wobble{from{transform:scale(1);}to{transform:scale(1.3) rotate(-10deg);}}
+.actions-row{display:flex;gap:.5rem;width:100%;max-width:600px;margin-bottom:.8rem;flex-wrap:wrap;}
+.btn-sec{flex:1;padding:.75rem .5rem;border-radius:12px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;min-height:48px;min-width:56px;-webkit-user-select:none;user-select:none;}
+.btn-sec:active{border-color:var(--accent);color:var(--accent);}
+.btn-sec:disabled{opacity:.4;cursor:not-allowed;}
+.btn-fav-action{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--amber);}
+.btn-grp-action{background:rgba(129,140,248,.12);border-color:rgba(129,140,248,.3);color:var(--accent2);}
+.btn-send{background:linear-gradient(135deg,#16a34a,#15803d);border-color:transparent;color:#fff;}
+.btn-send:active{background:#14532d;color:#fff;border-color:transparent;}
+.btn-send:disabled{background:var(--surface2);color:var(--muted);border-color:var(--border);}
+#aria-announce{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+#aria-status{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mic-btn">Aller au microphone</a>
+
+<div id="aria-announce" aria-live="assertive" aria-atomic="true" role="alert"></div>
+<div id="aria-status"   aria-live="polite"    aria-atomic="true" role="status"></div>
+
+<header aria-hidden="true">
+  <img src="logo_VocalMail.png" alt="VocalMail" style="width:180px;max-width:60%;margin-bottom:.5rem;border-radius:16px;">
+  <p class="tagline">Composez et envoyez un e-mail entièrement à la voix</p>
+</header>
+
+<div id="install-banner" role="banner" aria-live="polite">
+  📲 Installez VocalMail sur votre écran d'accueil !
+  <br><button onclick="installPWA()">Installer</button>
+</div>
+
+<div id="unsupported" role="alert"></div>
+
+<div id="csv-zone" aria-label="Importer les contacts">
+  <label id="csv-label" for="csv-input" aria-label="Importer mes contacts depuis un fichier CSV">
+    <span aria-hidden="true">📁</span> Importer mes contacts (CSV)
+    <input type="file" id="csv-input" accept=".csv" aria-label="Choisir un fichier CSV">
+  </label>
+  <div id="csv-info" aria-live="polite">Compatible Gmail, Outlook, Yahoo</div>
+  <button id="btn-clear-contacts" onclick="clearContacts()" aria-label="Effacer les contacts mémorisés">
+    🗑️ Effacer les contacts mémorisés
+  </button>
+</div>
+
+<div class="config-block" role="group" aria-label="Choisir le client de messagerie">
+  <label>📬 Envoyer via :</label>
+  <button class="opt-btn selected" data-client="gmail"   onclick="setMailClient('gmail')"   aria-pressed="true"  aria-label="Gmail">🔴 Gmail</button>
+  <button class="opt-btn"          data-client="outlook" onclick="setMailClient('outlook')" aria-pressed="false" aria-label="Outlook">🔵 Outlook</button>
+  <button class="opt-btn"          data-client="yahoo"   onclick="setMailClient('yahoo')"   aria-pressed="false" aria-label="Yahoo Mail">🟣 Yahoo</button>
+  <button class="opt-btn"          data-client="mailto"  onclick="setMailClient('mailto')"  aria-pressed="false" aria-label="Client mail local">📧 Local</button>
+</div>
+
+<div id="launch-screen" style="width:100%;max-width:600px;display:flex;flex-direction:column;align-items:center;gap:1.2rem;margin-bottom:1rem;">
+  <p style="font-size:1rem;color:var(--muted);text-align:center;line-height:1.6;" aria-hidden="true">
+    Appuyez pour lancer VocalMail et dicter votre mail à la voix.
+  </p>
+  <button id="launch-btn" onclick="launchApp()" style="width:100%;padding:2rem 1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:1.4rem;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;font-family:inherit;box-shadow:0 4px 40px rgba(56,189,248,0.4);min-height:90px;" aria-label="Lancer VocalMail — appuyez pour commencer à dicter votre mail">
+    🎙️ Lancer VocalMail
+  </button>
+</div>
+
+<div id="main-app" style="display:none;width:100%;" aria-label="VocalMail — dictez votre mail">
+
+  <div id="status-bar"
+       role="button"
+       aria-label="Zone de statut — appuyez pour activer le microphone"
+       tabindex="0"
+       onclick="onStatusTap()"
+       onkeydown="if(event.key==='Enter'||event.key===' ')onStatusTap()">
+    <span class="status-icon" aria-hidden="true">🎤</span>
+    <span id="status-text">À qui voulez-vous envoyer un mail ?</span>
+  </div>
+
+  <nav class="steps-track" aria-hidden="true">
+    <div class="step-node active" id="step-1">1<span class="step-label">Destinataire</span></div>
+    <div class="step-node"        id="step-2">2<span class="step-label">Objet</span></div>
+    <div class="step-node"        id="step-3">3<span class="step-label">Message</span></div>
+    <div class="step-node"        id="step-4">4<span class="step-label">Envoi</span></div>
+  </nav>
+
+  <div id="transcript-live" aria-hidden="true"></div>
+
+  <div id="tip-bar" aria-hidden="true">
+    <span aria-hidden="true">💡</span>
+    <span id="tip-text"></span>
+  </div>
+
+  <div id="favorites-zone" aria-hidden="true">
+    <div class="zone-title" style="color:var(--amber);">⭐ Favoris</div>
+    <div id="favorites-list"></div>
+  </div>
+
+  <div id="groups-zone" aria-hidden="true">
+    <div class="zone-title" style="color:var(--accent2);">👥 Mes groupes</div>
+    <div id="groups-list"></div>
+  </div>
+
+  <div id="contacts-list" role="listbox" aria-label="Contacts trouvés — choisissez un contact" aria-live="polite"></div>
+
+  <div id="text-fallback" aria-label="Saisie manuelle">
+    <label for="text-input">✏️ Saisie manuelle (si le micro ne fonctionne pas) :</label>
+    <input type="text" id="text-input" autocomplete="off" autocorrect="off"
+           aria-label="Tapez votre message ici" placeholder="Tapez ici…">
+    <button onclick="submitTextFallback()" aria-label="Valider la saisie">✅ Valider</button>
+  </div>
+
+  <div class="card" id="card-to" aria-label="Destinataire">
+    <div class="card-label" aria-hidden="true"><span aria-hidden="true">👤</span> À</div>
+    <div class="card-value placeholder" id="val-to" aria-live="polite" aria-label="Destinataire : en attente">En attente…</div>
+  </div>
+  <div class="card" id="card-subject" aria-label="Objet du mail">
+    <div class="card-label" aria-hidden="true"><span aria-hidden="true">📝</span> Objet</div>
+    <div class="card-value placeholder" id="val-subject" aria-live="polite" aria-label="Objet : en attente">En attente…</div>
+  </div>
+  <div class="card" id="card-body" aria-label="Corps du message">
+    <div class="card-label" aria-hidden="true"><span aria-hidden="true">✉️</span> Message</div>
+    <div class="card-value placeholder" id="val-body" style="white-space:pre-wrap;" aria-live="polite" aria-label="Message : en attente">En attente…</div>
+  </div>
+
+  <button id="mic-btn" class="idle"
+          aria-label="Activer le microphone pour dicter"
+          aria-pressed="false">
+    <span class="mic-icon" aria-hidden="true">🎙️</span>
+    <span id="mic-label">Appuyer pour dicter</span>
+  </button>
+
+  <div class="actions-row" role="group" aria-label="Actions">
+    <button class="btn-sec btn-fav-action" onclick="quickReply()"  aria-label="Accès rapide aux favoris">⭐ Favoris</button>
+    <button class="btn-sec btn-grp-action" onclick="listGroups()"  aria-label="Voir les groupes">👥 Groupes</button>
+    <button class="btn-sec"                onclick="restart()"     aria-label="Recommencer de zéro">🔄 Restart</button>
+    <button class="btn-sec"                onclick="skipStep()"    aria-label="Passer cette étape">⏭ Passer</button>
+    <button class="btn-sec"                id="btn-copy" onclick="copyMessage()" disabled aria-label="Copier le message dans le presse-papiers">📋 Copier</button>
+    <button class="btn-sec btn-send"       id="btn-send" onclick="sendMail()"    disabled aria-label="Envoyer l'e-mail">📤 Envoyer</button>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+function lsGet(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+const DEFAULT_CONTACTS=[
+  {name:'Jean Dupont',email:'jlg@tempforward.com'},
+  {name:'Sophie Bernard',email:'sophie.bernard@example.com'},
+  {name:'Antoine Lambert',email:'antoine.lambert@example.com'},
+];
+
+function loadContacts(){
+  try{const r=localStorage.getItem('vocalmail_contacts');if(r){const p=JSON.parse(r);if(Array.isArray(p)&&p.length>0)return p;}}catch(e){}
+  return[...DEFAULT_CONTACTS];
+}
+
+let CONTACTS  = loadContacts();
+let FAVORITES = lsGet('vocalmail_favorites',[]);
+let GROUPS    = lsGet('vocalmail_groups',[]);
+let mailClient = lsGet('vocalmail_mail','gmail')||'gmail';
+
+const STATE={step:1,to:null,toEmail:null,subject:null,body:null};
+let recognition=null, isListening=false;
+const synth=window.speechSynthesis;
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+let speechAvail=false, deferredInstall=null, appLaunched=false;
+let waitingConfirmClear=false;
+let grpMode=null, grpPendingName='', grpPendingMembers=[], grpDeleteName='';
+
+const TIPS=[
+  'Dites le nom ou prénom du destinataire. Ou dites "groupe" pour un groupe.',
+  'Dites l'objet du mail. Ou dites "modifier le destinataire" pour corriger.',
+  'Dictez votre message. Dites "terminé" pour finir.',
+  'E-mail prêt. Dites "envoyer" pour l'envoyer.',
+];
+
+const $=id=>document.getElementById(id);
+
+function norm(s){
+  return(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+function ariaAssert(text){
+  const el=$('aria-announce');
+  el.textContent='';
+  requestAnimationFrame(()=>{el.textContent=text;});
+}
+function ariaPolite(text){
+  const el=$('aria-status');
+  el.textContent='';
+  requestAnimationFrame(()=>{el.textContent=text;});
+}
+
+function speak(text,onEnd){
+  synth.cancel();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang='fr-FR'; utt.rate=0.92; utt.pitch=1.0;
+  const v=synth.getVoices().find(v=>v.lang.startsWith('fr'));
+  if(v) utt.voice=v;
+  if(onEnd) utt.onend=onEnd;
+  synth.speak(utt);
+}
+
+function setStatus(text,icon='🎤',cls=''){
+  $('status-text').textContent=text;
+  document.querySelector('.status-icon').textContent=icon;
+  $('status-bar').className=cls;
+  $('status-bar').setAttribute('aria-label',text+' — appuyez pour activer le microphone');
+}
+
+function promptMic(delay=800){
+  setTimeout(()=>{if(speechAvail&&!isListening)startListening();},delay);
+}
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredInstall=e;$('install-banner').style.display='block';
+});
+window.addEventListener('appinstalled',()=>{$('install-banner').style.display='none';});
+function installPWA(){
+  if(!deferredInstall)return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(()=>{deferredInstall=null;$('install-banner').style.display='none';});
+}
+
+function setMailClient(client){
+  mailClient=client; lsSave('vocalmail_mail',client);
+  document.querySelectorAll('[data-client]').forEach(b=>{
+    const a=b.dataset.client===client;
+    b.classList.toggle('selected',a);
+    b.setAttribute('aria-pressed',a?'true':'false');
+  });
+  const labels={gmail:'Gmail',outlook:'Outlook',yahoo:'Yahoo Mail',mailto:'client local'};
+  speak(`Messagerie : ${labels[client]||client}.`);
+}
+
+function launchApp(){
+  if(appLaunched)return;
+  appLaunched=true;
+  $('launch-screen').style.display='none';
+  $('main-app').style.display='block';
+
+  const n=CONTACTS.length, f=FAVORITES.length, g=GROUPS.length;
+  let msg='VocalMail est lancé. ';
+  msg+=`${n} contact${n>1?'s':''} disponible${n>1?'s':''}. `;
+  if(f>0) msg+=`${f} favori${f>1?'s':''}. `;
+  if(g>0) msg+=`${g} groupe${g>1?'s':''}. `;
+  msg+='À qui voulez-vous envoyer un mail ?';
+
+  setStatus('À qui voulez-vous envoyer un mail ?','🎤');
+  goToStep(1);
+
+  ariaAssert('VocalMail est lancé. Prêt à dicter un mail.');
+  speak(msg,()=>setTimeout(()=>startListening(),300));
+  setTimeout(()=>$('mic-btn').focus(),500);
+}
+
+function onStatusTap(){
+  if(!appLaunched)return;
+  if(STATE.step===4&&!$('btn-send').disabled){sendMail();return;}
+  startListening();
+}
+
+function initRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    $('unsupported').style.display='block';
+    $('unsupported').innerHTML='⚠️ Reconnaissance vocale non disponible.';
+    $('text-fallback').classList.add('visible');
+    $('mic-btn').style.display='none';
+    return false;
+  }
+  speechAvail=true;
+  recognition=new SR();
+  recognition.lang='fr-FR';
+  recognition.interimResults=true;
+  recognition.maxAlternatives=3;
+  recognition.continuous=false;
+
+  recognition.onstart=()=>{
+    isListening=true;
+    $('mic-btn').className='recording';
+    $('mic-btn').setAttribute('aria-pressed','true');
+    $('mic-btn').setAttribute('aria-label','Microphone actif — parlez maintenant');
+    $('mic-label').textContent='Écoute…';
+    setStatus('J'écoute… parlez maintenant.','🔴','listening');
+    ariaPolite('Microphone actif.');
+  };
+
+  recognition.onerror=e=>{
+    stopListening();
+    if(e.error==='no-speech'){
+      setStatus('Aucune parole détectée. Réessayez.','🔇');
+      ariaPolite('Aucune parole détectée.');
+    }else if(e.error==='not-allowed'){
+      setStatus('Accès au micro refusé.','🚫');
+      speak('Accès au microphone refusé.');
+    }else{
+      setStatus('Erreur micro.','⚠️');
+      ariaPolite('Erreur microphone.');
+    }
+  };
+
+  recognition.onend=stopListening;
+  return true;
+}
+
+function startListening(){
+  if(isListening){recognition.stop();return;}
+  synth.cancel();
+  $('text-fallback').classList.remove('visible');
+  try{recognition.start();}catch(e){console.warn(e);}
+}
+
+function stopListening(){
+  isListening=false;
+  $('transcript-live').textContent='';
+  $('mic-btn').className='idle';
+  $('mic-btn').setAttribute('aria-pressed','false');
+  $('mic-btn').setAttribute('aria-label','Activer le microphone pour dicter');
+  $('mic-label').textContent='Appuyer pour dicter';
+  if($('status-bar').className==='listening') $('status-bar').className='';
+}
+
+function setupHandlers(){
+  if(!recognition)return;
+  recognition.onresult=e=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t; else interim+=t;
+    }
+    $('transcript-live').textContent=interim||final;
+    if(final)processVoice(final.trim().toLowerCase());
+  };
+}
+
+function listenOnce(callback,delay=400){
+  const doListen=()=>{
+    if(!recognition||!speechAvail)return;
+    recognition.onresult=e=>{
+      let final='';
+      for(let i=e.resultIndex;i<e.results.length;i++)
+        if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+      if(!final)return;
+      $('transcript-live').textContent='';
+      callback(final.trim().toLowerCase());
+    };
+    setTimeout(()=>{if(!isListening)try{recognition.start();}catch(e){console.warn(e);}},delay);
+  };
+  if(synth.speaking){const c=setInterval(()=>{if(!synth.speaking){clearInterval(c);doListen();}},150);}
+  else doListen();
+}
+
+function submitTextFallback(){
+  const val=$('text-input').value.trim();if(!val)return;
+  $('text-input').value='';processVoice(val.toLowerCase());
+}
+
+function processVoice(text){
+  if(grpMode==='naming'){handleGrpName(text);return;}
+  if(grpMode==='adding'){handleGrpMember(text);return;}
+
+  if(grpMode==='deleting'){
+    grpMode=null;
+    if(/^(confirmer|oui|supprimer|effacer)/.test(text)){
+      const idx=GROUPS.findIndex(g=>norm(g.name)===norm(grpDeleteName));
+      if(idx!==-1){GROUPS.splice(idx,1);lsSave('vocalmail_groups',GROUPS);renderGroups();}
+      speak(`Groupe "${grpDeleteName}" supprimé.`);
+    }else{speak('Annulé. Le groupe est conservé.');}
+    setupHandlers();return;
+  }
+
+  if(waitingConfirmClear){
+    waitingConfirmClear=false;
+    if(/^(confirmer|oui|effacer)/.test(text))clearContacts(true);
+    else speak('Annulé. Vos contacts sont conservés.');
+    setupHandlers();return;
+  }
+
+  if(/^(recommencer|annuler tout|reset)/.test(text)){restart();return;}
+  if(/(envoyer|envoie|oui|go|send|valider|confirmer|bon|parfait|accord)/.test(text)&&STATE.step===4){sendMail();return;}
+  if(/^(relire|répéter|résumé|réécouter)/.test(text)&&STATE.step===4){readSummary();return;}
+
+  if(/(créer|nouveau).*(groupe)/.test(text)){startGrpCreation();return;}
+  if(/(supprimer|effacer|enlever).*(groupe)/.test(text)){askDeleteGroup(text);return;}
+  if(/(voir|lister|mes).*(groupes)/.test(text)||/^groupes?$/.test(text)){listGroups();return;}
+  if(/groupe/.test(text)&&STATE.step===1){selectGroupByVoice(text);return;}
+
+  if(/(réponse rapide|favoris|raccourci)/.test(text)){quickReply();return;}
+  if(/(ajouter|mettre).*(favori)/.test(text)){addFav();return;}
+  if(/(retirer|enlever|supprimer).*(favori)/.test(text)){removeFav();return;}
+
+  if(/(modifier|changer|corriger).*(destinataire|à qui|contact)/.test(text)){correctField(1);return;}
+  if(/(modifier|changer|corriger).*(objet|sujet)/.test(text)){correctField(2);return;}
+  if(/(modifier|changer|corriger).*(message|corps|texte)/.test(text)){correctField(3);return;}
+
+  switch(STATE.step){
+    case 1:searchContact(text);break;
+    case 2:saveSubject(text);break;
+    case 3:saveBody(text);break;
+  }
+}
+
+function goToStep(n){
+  STATE.step=n;
+  for(let i=1;i<=4;i++){
+    const node=$(`step-${i}`);
+    node.className='step-node'+(i<n?' done':i===n?' active':'');
+  }
+  $('tip-text').textContent=TIPS[n-1]||TIPS[0];
+  ['card-to','card-subject','card-body'].forEach(id=>$(id).classList.remove('active-card'));
+  const cards={1:'card-to',2:'card-subject',3:'card-body'};
+  if(cards[n])$(cards[n]).classList.add('active-card');
+}
+
+function markDone(n){$(`step-${n}`).className='step-node done';}
+
+function searchContact(text){
+  const q=norm(text);
+  const words=q.split(/\s+/).filter(w=>w.length>=1);
+  const matches=CONTACTS.filter(c=>{
+    const cn=norm(c.name),ce=(c.email||'').toLowerCase();
+    return words.some(w=>w.length>=2&&(cn.includes(w)||ce.includes(w)))||cn===q;
+  });
+  if(matches.length===0){
+    setStatus(`🔍 "${text}" — non trouvé`,'🔍');
+    speak(`Je n'ai pas trouvé de contact pour ${text}. Répétez le nom.`);
+    promptMic(1800);return;
+  }
+  if(matches.length===1){selectContact(matches[0]);return;}
+  showContactList(matches);
+  const names=matches.map((c,i)=>`${i+1} : ${c.name.split(' ')[0]}`).join(', ');
+  speak(`J'ai trouvé ${matches.length} contacts : ${names}. Dites le numéro.`);
+  ariaAssert(`${matches.length} contacts trouvés. Choisissez en disant le numéro.`);
+  setStatus(`👥 ${matches.length} contacts trouvés`,'👥');
+}
+
+function showContactList(contacts){
+  const list=$('contacts-list');
+  list.innerHTML='';
+  list.removeAttribute('aria-hidden');
+  contacts.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='contact-item';
+    btn.setAttribute('role','option');
+    btn.setAttribute('aria-label',`${i+1}. ${c.name}, ${c.email}`);
+    btn.innerHTML=`<span aria-hidden="true">👤</span> <strong>${i+1}.</strong> ${c.name}<span class="contact-email">${c.email}</span>`;
+    btn.addEventListener('click',()=>selectContact(c));
+    list.appendChild(btn);
+  });
+  list.classList.add('visible');
+  const numWords={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8,neuf:9,dix:10};
+  if(!recognition)return;
+  recognition.onresult=e=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++)
+      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+    if(!final)return;
+    final=final.trim().toLowerCase();
+    const num=numWords[final]||parseInt(final);
+    if(num&&contacts[num-1]){selectContact(contacts[num-1]);}
+    else{
+      const match=contacts.find(c=>norm(c.name).includes(norm(final)));
+      if(match)selectContact(match);else speak('Je n'ai pas compris. Dites le numéro.');
+    }
+    setupHandlers();
+  };
+}
+
+function selectContact(contact){
+  $('contacts-list').classList.remove('visible');
+  $('contacts-list').setAttribute('aria-hidden','true');
+  STATE.to=contact.name;STATE.toEmail=contact.email;
+  const el=$('val-to');
+  el.textContent=`${contact.name} (${contact.email})`;
+  el.classList.remove('placeholder');
+  el.setAttribute('aria-label',`Destinataire : ${contact.name}`);
+  markDone(1);goToStep(2);
+  ariaPolite(`Destinataire : ${contact.name}.`);
+  speak(`Parfait ! Destinataire : ${contact.name}. Dites l'objet du mail.`,()=>promptMic(300));
+  setStatus(`✅ ${contact.name}`,'✅');
+  setupHandlers();
+  setTimeout(()=>$('mic-btn').focus(),200);
+}
+
+function saveSubject(text){
+  STATE.subject=cap(text);
+  const el=$('val-subject');
+  el.textContent=STATE.subject;el.classList.remove('placeholder');
+  el.setAttribute('aria-label',`Objet : ${STATE.subject}`);
+  markDone(2);goToStep(3);
+  ariaPolite(`Objet enregistré.`);
+  speak(`Objet : ${STATE.subject}. Dictez votre message, puis dites "terminé".`,()=>promptMic(400));
+  setStatus(`✅ ${STATE.subject}`,'✅');
+  setTimeout(()=>$('mic-btn').focus(),200);
+}
+
+function saveBody(text){
+  if(/^(terminé|termine|terminer|fin|c'est tout|c'est fini|envoyer maintenant)$/.test(text)){
+    if(!STATE.body){speak('Le message est vide. Dictez votre message d'abord.',()=>promptMic(600));return;}
+    markDone(3);goToStep(4);readSummary();return;
+  }
+  const cleaned=text.replace(/[\.,\s]*(terminé|termine|terminer|fin|c'est tout|c'est fini)\s*$/i,'').trim();
+  if(!cleaned){
+    if(!STATE.body){speak('Le message est vide. Dictez votre message d'abord.',()=>promptMic(600));return;}
+    markDone(3);goToStep(4);readSummary();return;
+  }
+  const msg=cleaned
+    .replace(/point/g,'.').replace(/virgule/g,',')
+    .replace(/point d'exclamation/g,'!').replace(/point d'interrogation/g,'?')
+    .replace(/à la ligne/gi,'
+').replace(/deux points/g,':');
+  STATE.body=(STATE.body?STATE.body+' ':'')+msg;
+  const el=$('val-body');
+  el.textContent=STATE.body;el.classList.remove('placeholder');
+  el.setAttribute('aria-label',`Message : ${STATE.body}`);
+  setStatus('📝 Message en cours…','📝');
+  ariaPolite('Message enregistré.');
+  speak('Enregistré. Continuez, ou dites "terminé" pour finir.',()=>promptMic(500));
+}
+
+let _sendListenerActive = false;
+
+function readSummary(){
+  $('aria-announce').textContent = '';
+  $('aria-status').textContent = '';
+
+  const txt = `E-mail prêt. Destinataire : ${STATE.to}. Objet : ${STATE.subject}. Dites "envoyer" pour l'envoyer.`;
+  setStatus('✅ Dites "envoyer" — ou appuyez sur Envoyer', '✅', 'success');
+  $('btn-send').disabled = false;
+  $('btn-copy').disabled = false;
+
+  for(let i=1; i<=4; i++){
+    $(`step-${i}`).className = 'step-node' + (i<4 ? ' done' : ' active');
+  }
+  $('tip-text').textContent = TIPS[3];
+
+  // Annoncer via ARIA AVANT de parler pour que TalkBack soit informé
+  ariaAssert('E-mail prêt. Dites envoyer pour envoyer.');
+
+  speak(txt, () => {
+    // Délai plus long pour laisser TalkBack finir ses annonces de focus
+    setTimeout(() => listenForSend(), 1200);
+  });
+}
+
+function listenForSend(){
+  if(STATE.step !== 4 || _sendListenerActive) return;
+  _sendListenerActive = true;
+
+  // Retirer le focus de tous les éléments pour éviter que TalkBack
+  // n'intercepte la reconnaissance vocale
+  if(document.activeElement && document.activeElement !== document.body){
+    document.activeElement.blur();
+  }
+
+  function doListen(){
+    if(STATE.step !== 4){ _sendListenerActive = false; return; }
+    // Attendre que ni TalkBack ni la synthèse ne parlent
+    if(isListening || synth.speaking){
+      setTimeout(doListen, 600);
+      return;
+    }
+    try {
+      recognition.onresult = e => {
+        let interim = '', final = '';
+        for(let i = e.resultIndex; i < e.results.length; i++){
+          const t = e.results[i][0].transcript;
+          if(e.results[i].isFinal) final += t; else interim += t;
+        }
+        $('transcript-live').textContent = interim || final;
+        if(final) processVoice(final.trim().toLowerCase());
+      };
+      recognition.start();
+      // Petit signal visuel/ARIA que le micro est ouvert
+      setStatus('🔴 Écoute… dites "envoyer"', '🔴', 'listening');
+    } catch(e) {
+      console.warn('listenForSend error:', e);
+    }
+  }
+
+  doListen();
+
+  // Si l'écoute s'arrête toute seule (timeout de Chrome), relancer
+  recognition.onend = function() {
+    stopListening();
+    if(STATE.step === 4 && _sendListenerActive) {
+      setTimeout(() => {
+        if(STATE.step === 4 && _sendListenerActive && !isListening && !synth.speaking){
+          doListen();
+        }
+      }, 1000);
+    } else {
+      setupHandlers();
+    }
+  };
+}
+
+function sendMail(){
+  if(!STATE.toEmail)return;
+  const emails=STATE.toEmail;
+  const to=encodeURIComponent(emails);
+  const subject=encodeURIComponent(STATE.subject||'');
+  const body=encodeURIComponent(STATE.body||'');
+  let url;
+  if(isMobile){url=`mailto:${emails}?subject=${STATE.subject||''}&body=${STATE.body||''}`;}
+  else{
+    switch(mailClient){
+      case 'gmail':   url=`https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;break;
+      case 'outlook': url=`https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${subject}&body=${body}`;break;
+      case 'yahoo':   url=`https://compose.mail.yahoo.com/?to=${to}&subject=${subject}&body=${body}`;break;
+      default:        url=`mailto:${emails}?subject=${STATE.subject||''}&body=${STATE.body||''}`;
+    }
+  }
+  speak(`Ouverture de votre messagerie.`);
+  setStatus(`📤 Envoi à ${STATE.to}…`,'📤','success');
+  setTimeout(()=>{window.location.href=url;},800);
+}
+
+function copyMessage(){
+  const text=`À : ${STATE.toEmail}
+Objet : ${STATE.subject}
+
+${STATE.body}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    ariaPolite('Message copié.');
+    speak('Message copié.');
+    setStatus('📋 Message copié !','📋','success');
+    const btn=$('btn-copy');btn.textContent='✅ Copié !';
+    setTimeout(()=>{btn.textContent='📋 Copier';},3000);
+  }).catch(()=>setStatus('Copie non disponible.','⚠️'));
+}
+
+function correctField(n){
+  _sendListenerActive = false;
+  const ids={1:'val-to',2:'val-subject',3:'val-body'};
+  const names={1:'destinataire',2:'objet',3:'message'};
+  const prompts={1:'Dites le nom du nouveau destinataire.',2:'Dites le nouvel objet.',3:'Dictez votre nouveau message.'};
+  if(n===1){STATE.to=null;STATE.toEmail=null;}
+  if(n===2){STATE.subject=null;}
+  if(n===3){STATE.body=null;}
+  const el=$(ids[n]);el.textContent='En attente…';el.classList.add('placeholder');
+  $('btn-send').disabled=true;$('btn-copy').disabled=true;
+  goToStep(n);
+  ariaAssert(`Correction du ${names[n]}.`);
+  speak(`Correction du ${names[n]}. ${prompts[n]}`,()=>promptMic(400));
+  setStatus(`✏️ Correction du ${names[n]}`,'✏️');
+  setupHandlers();
+  setTimeout(()=>$('mic-btn').focus(),200);
+}
+
+function restart(){
+  _sendListenerActive = false;
+  STATE.step=1;STATE.to=null;STATE.toEmail=null;STATE.subject=null;STATE.body=null;
+  ['val-to','val-subject','val-body'].forEach(id=>{
+    $(id).textContent='En attente…';$(id).className='card-value placeholder';
+  });
+  $('contacts-list').classList.remove('visible');
+  $('btn-send').disabled=true;$('btn-copy').disabled=true;
+  grpMode=null;grpPendingName='';grpPendingMembers=[];
+  synth.cancel();if(isListening)recognition?.stop();
+  goToStep(1);
+  setStatus('À qui voulez-vous envoyer un mail ?','🎤');
+  ariaAssert('Recommencer.');
+  speak('Recommençons. À qui voulez-vous envoyer un mail ?',()=>promptMic(400));
+  setTimeout(()=>$('mic-btn').focus(),200);
+}
+
+function skipStep(){
+  if(STATE.step>=4)return;
+  if(STATE.step===1&&!STATE.to){speak('Le destinataire est obligatoire.');return;}
+  goToStep(STATE.step+1);
+  speak(TIPS[STATE.step-1]);
+}
+
+function addFav(){
+  if(!STATE.to||!STATE.toEmail){speak('Sélectionnez d'abord un destinataire.');return;}
+  if(FAVORITES.find(f=>f.email===STATE.toEmail)){speak(`${STATE.to} est déjà dans vos favoris.`);return;}
+  if(FAVORITES.length>=8){speak('Maximum 8 favoris.');return;}
+  FAVORITES.push({name:STATE.to,email:STATE.toEmail});
+  lsSave('vocalmail_favorites',FAVORITES);renderFavorites();
+  ariaPolite(`${STATE.to} ajouté aux favoris.`);
+  speak(`${STATE.to} ajouté aux favoris.`);
+}
+
+function removeFav(){
+  if(!STATE.toEmail){speak('Sélectionnez d'abord un destinataire.');return;}
+  const idx=FAVORITES.findIndex(f=>f.email===STATE.toEmail);
+  if(idx===-1){speak(`${STATE.to} n'est pas dans vos favoris.`);return;}
+  FAVORITES.splice(idx,1);lsSave('vocalmail_favorites',FAVORITES);renderFavorites();
+  speak(`${STATE.to} retiré des favoris.`);
+}
+
+function renderFavorites(){
+  const zone=$('favorites-zone'),list=$('favorites-list');
+  if(FAVORITES.length===0){zone.style.display='none';return;}
+  zone.style.display='block';list.innerHTML='';
+  FAVORITES.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='fav-btn';
+    btn.setAttribute('aria-label',`Favori ${i+1} : ${f.name}`);
+    btn.textContent=`⭐ ${f.name.split(' ')[0]}`;
+    btn.addEventListener('click',()=>selectContact(f));
+    list.appendChild(btn);
+  });
+}
+
+function quickReply(){
+  if(FAVORITES.length===0){
+    speak('Pas encore de favoris.');return;
+  }
+  const names=FAVORITES.map((f,i)=>`${i+1} : ${f.name.split(' ')[0]}`).join(', ');
+  ariaAssert(`${FAVORITES.length} favoris disponibles.`);
+  speak(`Réponse rapide. ${FAVORITES.length} favoris : ${names}. Dites le numéro.`);
+  setStatus('⭐ Favoris — dites le numéro.','⭐');
+  if(!recognition)return;
+  const nw={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8};
+  recognition.onresult=e=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++)
+      if(e.results[i].isFinal)final+=e.results[i][0].transcript;
+    if(!final)return;
+    final=final.trim().toLowerCase();
+    const num=nw[final]||parseInt(final);
+    if(num&&FAVORITES[num-1]){selectContact(FAVORITES[num-1]);}
+    else{
+      const match=FAVORITES.find(f=>norm(f.name).includes(norm(final)));
+      if(match)selectContact(match);else{speak('Je n'ai pas compris.');promptMic(600);}
+    }
+    setupHandlers();
+  };
+  promptMic(500);
+}
+
+function renderGroups(){
+  const zone=$('groups-zone'),list=$('groups-list');
+  if(GROUPS.length===0){zone.style.display='none';return;}
+  zone.style.display='block';list.innerHTML='';
+  GROUPS.forEach((g,i)=>{
+    const btn=document.createElement('button');
+    btn.className='grp-btn';
+    btn.setAttribute('aria-label',`Groupe ${g.name}`);
+    btn.textContent=`👥 ${g.name}`;
+    btn.addEventListener('click',()=>selectGroup(g));
+    list.appendChild(btn);
+  });
+}
+
+function selectGroup(group){
+  const emails=group.members.map(m=>m.email).join(', ');
+  const names=group.members.map(m=>m.name.split(' ')[0]).join(', ');
+  STATE.to=`Groupe : ${group.name}`;STATE.toEmail=emails;
+  const el=$('val-to');
+  el.textContent=`👥 ${group.name} (${group.members.length} membres)`;
+  el.classList.remove('placeholder');
+  el.setAttribute('aria-label',`Destinataires : groupe ${group.name}`);
+  markDone(1);goToStep(2);
+  ariaPolite(`Groupe ${group.name} sélectionné.`);
+  speak(`Groupe "${group.name}" sélectionné. Dites l'objet du mail.`,()=>promptMic(300));
+  setStatus(`👥 ${group.name}`,'👥');
+  setupHandlers();
+  setTimeout(()=>$('mic-btn').focus(),200);
+}
+
+function listGroups(){
+  if(GROUPS.length===0){
+    speak('Vous n'avez pas encore de groupes.');return;
+  }
+  const names=GROUPS.map((g,i)=>`${i+1} : ${g.name}`).join(', ');
+  ariaAssert(`${GROUPS.length} groupes disponibles.`);
+  speak(`${GROUPS.length} groupes : ${names}. Dites le numéro ou le nom.`,()=>{
+    listenOnce(final=>{
+      const nw={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8};
+      const num=nw[final]||parseInt(final);
+      if(num&&GROUPS[num-1]){selectGroup(GROUPS[num-1]);return;}
+      const match=GROUPS.find(g=>norm(g.name).includes(norm(final))||norm(final).includes(norm(g.name)));
+      if(match){selectGroup(match);return;}
+      speak('Je n'ai pas compris.');setupHandlers();
+    });
+  });
+  setStatus(`👥 ${GROUPS.length} groupes`,'👥');
+}
+
+function selectGroupByVoice(text){
+  const q=text.replace(/groupe\s*/i,'').trim();
+  if(!q){listGroups();return;}
+  const match=GROUPS.find(g=>norm(g.name).includes(norm(q))||norm(q).includes(norm(g.name)));
+  if(match)selectGroup(match);
+  else speak(`Groupe "${q}" non trouvé.`);
+}
+
+function startGrpCreation(){
+  grpMode='naming';grpPendingName='';grpPendingMembers=[];
+  setStatus('👥 Création de groupe','👥');
+  ariaAssert('Création de groupe.');
+  speak('Création d'un groupe. Quel est le nom de ce groupe ?',()=>{
+    listenOnce(text=>handleGrpName(text));
+  });
+}
+
+function handleGrpName(text){
+  grpPendingName=cap(text);grpMode='adding';
+  setStatus(`👥 Groupe "${grpPendingName}"`,'👥');
+  speak(`Groupe "${grpPendingName}". Dites le nom du premier membre.`,()=>{
+    listenOnce(text=>handleGrpMember(text));
+  });
+}
+
+function handleGrpMember(text){
+  if(/^(terminé|termine|fin|c'est tout|c'est fini)$/.test(text)){
+    if(grpPendingMembers.length===0){
+      speak('Le groupe est vide.',()=>listenOnce(t=>handleGrpMember(t)));return;
+    }
+    const ng={name:grpPendingName,members:[...grpPendingMembers]};
+    const idx=GROUPS.findIndex(g=>norm(g.name)===norm(grpPendingName));
+    if(idx!==-1)GROUPS.splice(idx,1);
+    GROUPS.push(ng);lsSave('vocalmail_groups',GROUPS);renderGroups();
+    grpMode=null;grpPendingName='';grpPendingMembers=[];
+    ariaAssert(`Groupe "${ng.name}" créé.`);
+    speak(`Groupe "${ng.name}" créé.`);
+    setStatus(`✅ Groupe "${ng.name}" créé.`,'✅','success');
+    setupHandlers();
+    setTimeout(()=>$('mic-btn').focus(),200);
+    return;
+  }
+  setStatus(`🔍 Recherche : "${text}"`,'🔍');
+  const q=norm(text),words=q.split(/\s+/).filter(w=>w.length>=1);
+  const matches=CONTACTS.filter(c=>{
+    const cn=norm(c.name),ce=(c.email||'').toLowerCase();
+    return words.some(w=>w.length>=2&&(cn.includes(w)||ce.includes(w)))||cn===q;
+  });
+  if(matches.length===0){
+    speak(`Pas trouvé. Dites un autre nom.`,()=>listenOnce(t=>handleGrpMember(t)));return;
+  }
+  const contact=matches[0];
+  if(grpPendingMembers.find(m=>m.email===contact.email)){
+    speak(`${contact.name} est déjà présent.`,()=>listenOnce(t=>handleGrpMember(t)));return;
+  }
+  grpPendingMembers.push(contact);
+  const n=grpPendingMembers.length;
+  ariaPolite(`${contact.name} ajouté.`);
+  speak(`${contact.name} ajouté. Dites un autre nom, ou "terminé".`,()=>listenOnce(t=>handleGrpMember(t)));
+}
+
+function askDeleteGroup(text){
+  const q=text.replace(/(supprimer|effacer|enlever)\s*(le\s*)?groupe\s*/i,'').trim();
+  const match=GROUPS.find(g=>norm(g.name).includes(norm(q))||norm(q).includes(norm(g.name)));
+  if(!match){listGroups();return;}
+  grpDeleteName=match.name;grpMode='deleting';
+  speak(`Voulez-vous supprimer le groupe "${match.name}" ? Dites "confirmer".`,()=>{
+    listenOnce(final=>{
+      grpMode=null;
+      if(/^(confirmer|oui|supprimer|effacer)/.test(final)){
+        const idx=GROUPS.findIndex(g=>g.name===grpDeleteName);
+        if(idx!==-1){GROUPS.splice(idx,1);lsSave('vocalmail_groups',GROUPS);renderGroups();}
+        speak(`Groupe "${grpDeleteName}" supprimé.`);
+      }else speak('Annulé.');
+      grpDeleteName='';setupHandlers();
+    });
+  });
+  setStatus(`⚠️ Supprimer "${match.name}" ?`,'⚠️');
+}
+
+function parseCSV(text){
+  const lines=text.split(/
+?
+/).filter(l=>l.trim());if(lines.length<2)return[];
+  const sep=lines[0].includes(';')?';':',';
+  const headers=lines[0].split(sep).map(h=>h.replace(/["
+]/g,'').trim().toLowerCase());
+  const emailIdx=headers.findIndex(h=>['email','e-mail','mail','adresse','address','smtp'].some(k=>h.includes(k)));
+  const nameIdx=headers.findIndex(h=>['name','nom','display name','full name','nom complet','given name'].some(k=>h.includes(k)));
+  if(emailIdx===-1)return null;
+  const result=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].match(/(".*?"|[^,;]+)(?=[,;]|$)/g)||lines[i].split(sep);
+    const clean=c=>(c||'').replace(/["
+]/g,'').trim();
+    const email=clean(cols[emailIdx]);if(!email||!email.includes('@'))continue;
+    let name=nameIdx!==-1?clean(cols[nameIdx]):'';
+    if(!name)name=email.split('@')[0];
+    result.push({name,email});
+  }
+  return result;
+}
+
+function initCSVImport(){
+  const saved=localStorage.getItem('vocalmail_contacts');
+  if(saved){
+    try{
+      const n=JSON.parse(saved).length;
+      $('csv-info').textContent=`✅ ${n} contacts mémorisés`;
+      $('csv-info').className='ok';
+    }catch(e){}
+  }
+  $('csv-input').addEventListener('change',function(e){
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const result=parseCSV(ev.target.result);
+      if(!result)return;
+      const existing=new Set(CONTACTS.map(c=>c.email.toLowerCase()));
+      CONTACTS.unshift(...result.filter(c=>!existing.has(c.email.toLowerCase())));
+      lsSave('vocalmail_contacts',CONTACTS);
+      ariaPolite(`${result.length} contacts importés.`);
+      speak(`${result.length} contacts importés.`);
+    };
+    reader.readAsText(file,'UTF-8');
+  });
+}
+
+function clearContacts(confirmed=false){
+  if(!confirmed){
+    speak('Dites "confirmer" pour effacer vos contacts.');
+    setStatus('Dites "confirmer" pour effacer.','⚠️');
+    waitingConfirmClear=true;promptMic(800);return;
+  }
+  try{localStorage.removeItem('vocalmail_contacts');}catch(e){}
+  CONTACTS.length=0;CONTACTS.push(...DEFAULT_CONTACTS);
+  ariaPolite('Contacts réinitialisés.');
+  speak('Contacts réinitialisés.');
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e));
+  });
+}
+
+window.addEventListener('load',()=>{
+  initRecognition();
+  initCSVImport();
+  setupHandlers();
+  renderFavorites();
+  renderGroups();
+
+  document.querySelectorAll('[data-client]').forEach(b=>{
+    const a=b.dataset.client===mailClient;
+    b.classList.toggle('selected',a);
+    b.setAttribute('aria-pressed',a?'true':'false');
+  });
+
+  $('mic-btn').addEventListener('click',startListening);
+  $('text-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitTextFallback();});
+
+  document.addEventListener('keydown',e=>{
+    if(!appLaunched&&(e.code==='Space'||e.code==='Enter')){e.preventDefault();launchApp();return;}
+    if(appLaunched&&e.code==='Space'&&!['BUTTON','INPUT'].includes(e.target.tagName)){
+      e.preventDefault();startListening();
+    }
+  });
+
+  synth.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>synth.getVoices();
+  goToStep(1);
+  setTimeout(()=>{
+    ariaPolite('VocalMail prêt. Appuyez sur le bouton Lancer VocalMail.');
+  },500);
+});
+</script>
+</body>
+</html>
