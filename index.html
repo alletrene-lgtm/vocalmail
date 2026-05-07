@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#38bdf8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VocalMail">
+<meta name="description" content="Composez et envoyez des e-mails entièrement à la voix">
+<link rel="manifest" href="manifest.json">
+<title>VocalMail</title>
+<style>
+:root{--bg:#0a0f1e;--surface:#111827;--surface2:#1a2440;--accent:#38bdf8;--accent2:#818cf8;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--text:#f0f6ff;--muted:#6b7280;--border:rgba(56,189,248,0.18);--glow:0 0 32px rgba(56,189,248,0.18);--radius:18px;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:-webkit-fill-available;display:flex;flex-direction:column;align-items:center;padding:calc(1rem + var(--safe-top)) 1rem calc(2rem + var(--safe-bottom));background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(56,189,248,.10) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 90%,rgba(129,140,248,.08) 0%,transparent 60%);-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.skip-link{position:absolute;top:-100px;left:1rem;background:var(--accent);color:#000;padding:.5rem 1rem;border-radius:8px;font-weight:700;z-index:999;transition:top .2s;}.skip-link:focus{top:1rem;}
+header{text-align:center;margin-bottom:1rem;width:100%;max-width:600px;}
+.logo{font-family:'Courier New',Consolas,monospace;font-size:clamp(1.4rem,6vw,2rem);font-weight:700;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.2rem;}
+.tagline{color:var(--muted);font-size:.82rem;font-weight:300;}
+#install-banner{display:none;width:100%;max-width:600px;background:rgba(56,189,248,.10);border:1.5px solid var(--accent);border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem;font-size:.85rem;color:var(--accent);text-align:center;line-height:1.5;}
+#install-banner button{margin-top:.5rem;padding:.4rem 1rem;border-radius:8px;border:none;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer;}
+#unsupported{display:none;width:100%;max-width:600px;background:rgba(248,113,113,.10);border:1.5px solid var(--red);border-radius:var(--radius);padding:1.2rem;text-align:center;color:var(--red);font-size:.95rem;line-height:1.6;margin-bottom:.8rem;}
+.config-block{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.8rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+.config-block label{font-size:.78rem;color:var(--muted);width:100%;margin-bottom:.2rem;}
+.opt-btn{padding:.5rem .9rem;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:40px;-webkit-user-select:none;user-select:none;}
+.opt-btn.sel-lang:active,.opt-btn.sel-lang.selected{border-color:var(--accent2);background:rgba(129,140,248,.12);color:var(--accent2);}
+.opt-btn.sel-mail:active,.opt-btn.sel-mail.selected{border-color:var(--accent);background:rgba(56,189,248,.12);color:var(--accent);}
+#csv-zone{width:100%;max-width:600px;margin-bottom:.8rem;}
+#csv-label{display:flex;align-items:center;justify-content:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:12px;border:1.5px dashed var(--border);background:var(--surface2);color:var(--muted);font-size:.88rem;font-family:inherit;font-weight:600;cursor:pointer;min-height:52px;-webkit-user-select:none;user-select:none;}
+#csv-label:active{border-color:var(--accent);color:var(--accent);}
+#csv-input{display:none;}
+#csv-info{font-size:.78rem;color:var(--muted);text-align:center;margin-top:.3rem;min-height:1.1rem;}
+#csv-info.ok{color:var(--green);}#csv-info.err{color:var(--red);}
+#btn-clear-contacts{margin-top:.35rem;width:100%;padding:.5rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;font-size:.78rem;cursor:pointer;}
+#btn-clear-contacts:active{color:var(--red);border-color:var(--red);}
+#status-bar{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;font-size:1.05rem;font-weight:400;line-height:1.5;min-height:64px;display:flex;align-items:center;gap:.7rem;box-shadow:var(--glow);transition:border-color .3s;}
+#status-bar.listening{border-color:var(--red);box-shadow:0 0 32px rgba(248,113,113,.25);}
+#status-bar.success{border-color:var(--green);box-shadow:0 0 32px rgba(74,222,128,.18);}
+.status-icon{font-size:1.4rem;flex-shrink:0;}
+.steps-track{width:100%;max-width:600px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;position:relative;padding:0 .5rem;}
+.steps-track::before{content:'';position:absolute;left:2rem;right:2rem;top:50%;height:2px;background:var(--surface2);z-index:0;}
+.step-node{width:2.6rem;height:2.6rem;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--muted);position:relative;z-index:1;transition:all .3s;font-family:'Courier New',Consolas,monospace;}
+.step-node.active{background:var(--accent);border-color:var(--accent);color:#000;box-shadow:0 0 20px rgba(56,189,248,.45);transform:scale(1.12);}
+.step-node.done{background:var(--green);border-color:var(--green);color:#000;}
+.step-label{position:absolute;bottom:-1.5rem;white-space:nowrap;font-size:.62rem;color:var(--muted);left:50%;transform:translateX(-50%);}
+#transcript-live{width:100%;max-width:600px;font-size:.88rem;color:var(--amber);min-height:1.3rem;text-align:center;font-style:italic;margin-bottom:.5rem;}
+#tip-bar{width:100%;max-width:600px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.2);border-radius:12px;padding:.75rem 1rem;font-size:.82rem;color:var(--accent2);margin-bottom:.8rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.5;}
+#favorites-zone{display:none;width:100%;max-width:600px;margin-bottom:.8rem;}
+#fav-title{font-size:.78rem;color:var(--amber);margin-bottom:.4rem;font-weight:600;}
+#favorites-list{display:flex;flex-wrap:wrap;gap:.5rem;}
+.fav-btn{padding:.5rem .9rem;border-radius:20px;border:1.5px solid rgba(251,191,36,.35);background:rgba(251,191,36,.08);color:var(--amber);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:40px;-webkit-user-select:none;user-select:none;}
+.fav-btn:active{background:rgba(251,191,36,.25);}
+#contacts-list{width:100%;max-width:600px;display:none;flex-direction:column;gap:.4rem;margin-bottom:.8rem;}
+#contacts-list.visible{display:flex;}
+.contact-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;cursor:pointer;font-size:.95rem;display:flex;align-items:center;gap:.6rem;min-height:56px;-webkit-user-select:none;user-select:none;}
+.contact-item:active{border-color:var(--accent);background:rgba(56,189,248,.08);}
+.contact-email{font-size:.75rem;color:var(--muted);margin-left:auto;}
+#text-fallback{display:none;width:100%;max-width:600px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-bottom:.8rem;flex-direction:column;gap:.5rem;}
+#text-fallback.visible{display:flex;}
+#text-fallback label{font-size:.8rem;color:var(--muted);}
+#text-fallback input{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:.7rem 1rem;font-family:inherit;font-size:1rem;color:var(--text);width:100%;outline:none;}
+#text-fallback input:focus{border-color:var(--accent);}
+#text-fallback button{padding:.7rem;border-radius:8px;background:var(--accent);color:#000;font-family:inherit;font-weight:700;font-size:.9rem;border:none;cursor:pointer;}
+.card{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem;transition:border-color .3s,box-shadow .3s;}
+.card.active-card{border-color:var(--accent);box-shadow:var(--glow);}
+.card-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'Courier New',Consolas,monospace;margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;}
+.card-value{font-size:1.05rem;font-weight:400;color:var(--text);min-height:1.5rem;word-break:break-word;}
+.card-value.placeholder{color:var(--muted);font-style:italic;font-size:.9rem;}
+#mic-btn{display:flex;align-items:center;justify-content:center;gap:.8rem;width:100%;max-width:600px;padding:1.6rem 2rem;font-size:1.2rem;font-family:inherit;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;margin-bottom:.8rem;transition:all .2s;min-height:72px;-webkit-user-select:none;user-select:none;}
+#mic-btn.idle{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;box-shadow:0 4px 32px rgba(56,189,248,.35);}
+#mic-btn.recording{background:var(--red);color:#fff;animation:pulse-btn 1s ease-in-out infinite;}
+#mic-btn:disabled{background:var(--surface2);color:var(--muted);box-shadow:none;}
+@keyframes pulse-btn{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.5);}50%{box-shadow:0 0 0 20px rgba(248,113,113,0);}}
+.mic-icon{font-size:1.6rem;}
+#mic-btn.recording .mic-icon{animation:wobble .5s ease-in-out infinite alternate;}
+@keyframes wobble{from{transform:scale(1);}to{transform:scale(1.3) rotate(-10deg);}}
+.actions-row{display:flex;gap:.5rem;width:100%;max-width:600px;margin-bottom:.8rem;flex-wrap:wrap;}
+.btn-sec{flex:1;padding:.75rem .5rem;border-radius:12px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);transition:all .2s;min-height:48px;min-width:56px;-webkit-user-select:none;user-select:none;}
+.btn-sec:active{border-color:var(--accent);color:var(--accent);}
+.btn-sec:disabled{opacity:.4;cursor:not-allowed;}
+.btn-fav{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.3);color:var(--amber);}
+.btn-fav:active{background:rgba(251,191,36,.25);}
+.grp-btn{padding:.5rem .9rem;border-radius:20px;border:1.5px solid rgba(129,140,248,.35);background:rgba(129,140,248,.08);color:var(--accent2);font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;min-height:40px;-webkit-user-select:none;user-select:none;}
+.grp-btn:active{background:rgba(129,140,248,.25);}
+.btn-send{background:linear-gradient(135deg,#16a34a,#15803d);border-color:transparent;color:#fff;}
+.btn-send:active{background:#14532d;color:#fff;border-color:transparent;}
+.btn-send:disabled{background:var(--surface2);color:var(--muted);border-color:var(--border);}
+#aria-live{position:absolute;left:-9999px;}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#mic-btn">Microphone</a>
+<div id="aria-live" aria-live="assertive" aria-atomic="true" role="status"></div>
+
+<header>
+  <div class="logo">📧 VocalMail</div>
+  <p class="tagline" id="tagline"></p>
+</header>
+
+<div id="install-banner" role="banner">
+  <span id="install-text"></span><br>
+  <button onclick="installPWA()" id="install-btn"></button>
+</div>
+<div id="unsupported" role="alert"></div>
+
+<!-- Langue -->
+<div class="config-block" role="group">
+  <label id="lang-label"></label>
+  <button class="opt-btn sel-lang selected" data-lang="fr" onclick="setLang('fr')" aria-pressed="true">🇫🇷 Français</button>
+  <button class="opt-btn sel-lang"          data-lang="en" onclick="setLang('en')" aria-pressed="false">🇬🇧 English</button>
+</div>
+
+<!-- CSV -->
+<div id="csv-zone">
+  <label id="csv-label" for="csv-input">
+    <span aria-hidden="true">📁</span><span id="csv-label-text"></span>
+    <input type="file" id="csv-input" accept=".csv">
+  </label>
+  <div id="csv-info"></div>
+  <button id="btn-clear-contacts" onclick="clearContacts()"></button>
+</div>
+
+<!-- Messagerie -->
+<div class="config-block" role="group">
+  <label id="mail-label"></label>
+  <button class="opt-btn sel-mail selected" data-client="gmail"   onclick="setMailClient('gmail')"   aria-pressed="true">🔴 Gmail</button>
+  <button class="opt-btn sel-mail"          data-client="outlook" onclick="setMailClient('outlook')" aria-pressed="false">🔵 Outlook</button>
+  <button class="opt-btn sel-mail"          data-client="yahoo"   onclick="setMailClient('yahoo')"   aria-pressed="false">🟣 Yahoo</button>
+  <button class="opt-btn sel-mail"          data-client="mailto"  onclick="setMailClient('mailto')"  aria-pressed="false">📧 Local</button>
+</div>
+
+<!-- Status -->
+<div id="status-bar" role="status" aria-live="polite" aria-atomic="true">
+  <span class="status-icon" aria-hidden="true">🎤</span>
+  <span id="status-text">…</span>
+</div>
+
+<!-- Steps -->
+<nav class="steps-track" aria-label="Steps">
+  <div class="step-node active" id="step-1" aria-current="step">1<span class="step-label" id="sl-1"></span></div>
+  <div class="step-node"        id="step-2">2<span class="step-label" id="sl-2"></span></div>
+  <div class="step-node"        id="step-3">3<span class="step-label" id="sl-3"></span></div>
+  <div class="step-node"        id="step-4">4<span class="step-label" id="sl-4"></span></div>
+</nav>
+
+<div id="transcript-live" aria-live="polite"></div>
+<div id="tip-bar" aria-live="polite"><span aria-hidden="true">💡</span><span id="tip-text"></span></div>
+
+<!-- Favoris -->
+<div id="favorites-zone">
+  <div id="fav-title"></div>
+  <div id="favorites-list"></div>
+</div>
+
+<!-- Groupes -->
+<div id="groups-zone" style="display:none;width:100%;max-width:600px;margin-bottom:.8rem;">
+  <div style="font-size:.78rem;color:var(--accent2);margin-bottom:.4rem;font-weight:600;" id="grp-title">👥 Mes groupes</div>
+  <div id="groups-list" style="display:flex;flex-wrap:wrap;gap:.5rem;"></div>
+</div>
+
+<!-- Contacts -->
+<div id="contacts-list" role="listbox"></div>
+
+<!-- Fallback -->
+<div id="text-fallback">
+  <label id="fallback-label"></label>
+  <input type="text" id="text-input" autocomplete="off" autocorrect="off">
+  <button onclick="submitTextFallback()" id="fallback-btn"></button>
+</div>
+
+<!-- Cards -->
+<div class="card" id="card-to">
+  <div class="card-label"><span aria-hidden="true">👤</span><span id="lbl-to"></span></div>
+  <div class="card-value placeholder" id="val-to"></div>
+</div>
+<div class="card" id="card-subject">
+  <div class="card-label"><span aria-hidden="true">📝</span><span id="lbl-subject"></span></div>
+  <div class="card-value placeholder" id="val-subject"></div>
+</div>
+<div class="card" id="card-body">
+  <div class="card-label"><span aria-hidden="true">✉️</span><span id="lbl-body"></span></div>
+  <div class="card-value placeholder" id="val-body" style="white-space:pre-wrap;"></div>
+</div>
+
+<!-- Mic -->
+<button id="mic-btn" class="idle" aria-label="Microphone">
+  <span class="mic-icon" aria-hidden="true">🎙️</span>
+  <span id="mic-label"></span>
+</button>
+
+<!-- Actions -->
+<div class="actions-row">
+  <button class="btn-sec btn-fav" id="btn-quick"   onclick="quickReply()">⭐ <span id="lbl-quick"></span></button>
+  <button class="btn-sec"         id="btn-restart"  onclick="restart()">🔄 <span id="lbl-restart"></span></button>
+  <button class="btn-sec"         id="btn-skip"     onclick="skipStep()">⏭ <span id="lbl-skip"></span></button>
+  <button class="btn-sec"         id="btn-copy"     onclick="copyMessage()" disabled>📋 <span id="lbl-copy"></span></button>
+  <button class="btn-sec btn-send" id="btn-send"    onclick="sendMail()"    disabled>📤 <span id="lbl-send"></span></button>
+</div>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════
+// TRANSLATIONS
+// ════════════════════════════════════════════
+const LANG = {
+  fr: {
+    code:'fr-FR',
+    tagline:'Composez et envoyez un e-mail entièrement à la voix',
+    statusInit:'Appuyez sur le microphone pour commencer.',
+    stepLabels:['Destinataire','Objet','Message','Envoi'],
+    tips:[
+      'Dites le <strong>nom ou prénom</strong> du destinataire.',
+      'Dites l\'<strong>objet</strong> du mail. Ou dites <strong>"modifier le destinataire"</strong> pour corriger.',
+      'Dictez votre <strong>message</strong>. Dites <strong>"terminé"</strong> pour finir. Ou <strong>"modifier l\'objet"</strong> pour corriger.',
+      'E-mail prêt ! Dites <strong>"envoyer"</strong>, <strong>"relire"</strong>, ou <strong>"modifier le destinataire / l\'objet / le message"</strong>.',
+    ],
+    waiting:'En attente…',
+    cardTo:'À', cardSubject:'Objet', cardBody:'Message',
+    micIdle:'Appuyer pour dicter', micListening:'Écoute…',
+    btnQuick:'Rapide', btnRestart:'Restart', btnSkip:'Passer', btnCopy:'Copier', btnSend:'Envoyer',
+    mailLabel:'📬 Envoyer via :', langLabel:'🌐 Langue / Language :',
+    csvLabel:' Importer mes contacts (CSV)', csvInfo:'Compatible Gmail, Outlook, Yahoo',
+    csvClear:'🗑️ Effacer les contacts mémorisés',
+    favTitle:'⭐ Réponse rapide — Mes favoris',
+    fallbackLabel:'✏️ Saisie manuelle :', fallbackBtn:'✅ Valider',
+    installText:'📲 Installez VocalMail sur votre écran d\'accueil !', installBtn:'Installer',
+    unsupported:'⚠️ Reconnaissance vocale non disponible. Utilisez <strong>Chrome</strong> sur Android ou <strong>Safari</strong> sur iPhone.',
+    numWords:{'un':1,'une':1,'deux':2,'trois':3,'quatre':4,'cinq':5,'six':6,'sept':7,'huit':8},
+    say:{
+      welcome:(n)=>n>0?`Bienvenue sur VocalMail. Vous avez ${n} favori${n>1?'s':''}. Dites réponse rapide pour les utiliser, ou appuyez sur le bouton.`:'Bienvenue sur VocalMail. Appuyez sur le grand bouton et dites le nom du destinataire.',
+      listening:'J\'écoute… parlez maintenant.',
+      noSpeech:'Aucune parole détectée. Réessayez.',
+      micDenied:'Accès au micro refusé. Autorisez-le dans les paramètres Chrome.',
+      notFound:(t)=>`Je n'ai pas trouvé de contact pour ${t}. Répétez le nom.`,
+      multiple:(n,names)=>`J'ai trouvé ${n} contacts : ${names}. Dites le numéro.`,
+      selected:(name)=>`Parfait ! Destinataire : ${name}. Dites l'objet du mail.`,
+      subjSaved:(s)=>`Objet : ${s}. Dictez votre message, puis dites "terminé".`,
+      bodySaved:'Enregistré. Continuez ou dites "terminé".',
+      bodyEmpty:'Le message est vide. Dictez votre message d\'abord.',
+      summary:(to,subj)=>`E-mail prêt. Destinataire : ${to}. Objet : ${subj}. Dites "envoyer" ou appuyez sur le bouton.`,
+      sending:(name)=>`Ouverture de votre messagerie pour envoyer à ${name}.`,
+      copied:'Message copié. Ouvrez Gmail et collez le message.',
+      restart:'Recommençons. Dites le nom du destinataire.',
+      skipMandatory:'Le destinataire est obligatoire.',
+      quickEmpty:'Pas encore de favoris. Choisissez un contact et dites "ajouter aux favoris".',
+      quickList:(n,names)=>`Réponse rapide. ${n} favori${n>1?'s':''} : ${names}. Dites le numéro.`,
+      favAdded:(name,n)=>`${name} ajouté aux favoris. Vous avez ${n} favori${n>1?'s':''}.`,
+      favRemoved:(name)=>`${name} retiré des favoris.`,
+      favMax:'Maximum 8 favoris. Retirez-en un avant d\'en ajouter un nouveau.',
+      favAlready:(name)=>`${name} est déjà dans vos favoris.`,
+      favNotFound:(name)=>`${name} n'est pas dans vos favoris.`,
+      noContact:'Sélectionnez d\'abord un destinataire.',
+      notUnderstood:'Je n\'ai pas compris. Dites le numéro.',
+      correcting:(field,ctx,prompt)=>`Correction du ${field}. ${ctx}${prompt}`,
+      fieldNames:{1:'destinataire',2:'objet',3:'message'},
+      fieldPrompts:{1:'Dites le nom du nouveau destinataire.',2:'Dites le nouvel objet.',3:'Dictez votre nouveau message. Dites "terminé" quand vous avez fini.'},
+      contactsSaved:(n)=>`${n} contact${n>1?'s importés et mémorisés':' importé et mémorisé'}.`,
+      contactsReset:'Contacts réinitialisés.',
+      langChanged:'Langue changée : français.',
+      mailClient:(l)=>`Messagerie : ${l}.`,
+      confirmClear:'Dites "confirmer" pour effacer vos contacts importés.',
+      cancelled:'Annulé. Vos contacts sont conservés.',
+      grpTitle:'👥 Mes groupes',
+      grpCreate:'Quel est le nom de ce groupe ?',
+      grpAddMember:(name)=>`${name} ajouté au groupe. Dites un autre nom, ou "terminé" pour finir.`,
+      grpNoMember:'Aucun membre trouvé. Répétez le nom.',
+      grpSaved:(name,n)=>`Groupe "${name}" créé avec ${n} membre${n>1?'s':''}.`,
+      grpEmpty:'Vous n\'avez pas encore de groupes. Dites "créer un groupe" pour commencer.',
+      grpList:(names)=>`Vos groupes : ${names}. Dites le nom du groupe pour l\'utiliser.`,
+      grpSelected:(name,n,members)=>`Groupe "${name}" sélectionné. ${n} destinataire${n>1?'s':''} : ${members}.`,
+      grpNotFound:(name)=>`Groupe "${name}" introuvable.`,
+      grpDeleted:(name)=>`Groupe "${name}" supprimé.`,
+      grpDeleteConfirm:(name)=>`Dites "confirmer" pour supprimer le groupe "${name}".`,
+      grpMemberExists:(name)=>`${name} est déjà dans ce groupe.`,
+    },
+    cmd:{
+      send:/^(envoyer|envoie)/,
+      restart:/^(recommencer|annuler tout|reset)/,
+      quick:/(réponse rapide|favoris|raccourci)/,
+      favAdd:/(ajouter|mettre).*(favori)/,
+      favRem:/(retirer|enlever|supprimer).*(favori)/,
+      correctTo:/(modifier|changer|corriger).*(destinataire|à qui|contact)/,
+      correctSubj:/(modifier|changer|corriger).*(objet|sujet)/,
+      correctBody:/(modifier|changer|corriger).*(message|corps|texte)/,
+      reread:/^(relire|répéter|lire|résumé)/,
+      done:/^(terminé|termine|fin|c'est tout|c'est fini|envoyer maintenant)$/,
+      confirm:/^(confirmer|oui|effacer)/,
+      grpCreate:/(créer|nouveau|créer un|nouveau).*(groupe)/,
+      grpSend:/(envoyer au groupe|groupe)\s+(\w+)/,
+      grpList:/(voir|lister|mes).*(groupes)/,
+      grpDelete:/(supprimer|effacer|enlever).*(groupe)/,
+    },
+    punctuation:(t)=>t.replace(/\bpoint\b/g,'.').replace(/\bvirgule\b/g,',').replace(/\bpoint d'exclamation\b/g,'!').replace(/\bpoint d'interrogation\b/g,'?').replace(/\bà la ligne\b/gi,'\n').replace(/\bdeux points\b/g,':'),
+  },
+  en: {
+    code:'en-US',
+    tagline:'Compose and send emails entirely by voice',
+    statusInit:'Press the microphone to start.',
+    stepLabels:['Recipient','Subject','Message','Send'],
+    tips:[
+      'Say the <strong>name</strong> of the recipient to search your contacts.',
+      'Say the <strong>subject</strong> of your email. Or say <strong>"change recipient"</strong> to correct.',
+      'Dictate your <strong>message</strong>. Say <strong>"done"</strong> to finish. Or say <strong>"change subject"</strong> to correct.',
+      'Email ready! Say <strong>"send"</strong>, <strong>"read again"</strong>, or <strong>"change recipient / subject / message"</strong>.',
+    ],
+    waiting:'Waiting…',
+    cardTo:'To', cardSubject:'Subject', cardBody:'Message',
+    micIdle:'Tap to dictate', micListening:'Listening…',
+    btnQuick:'Quick', btnRestart:'Restart', btnSkip:'Skip', btnCopy:'Copy', btnSend:'Send',
+    mailLabel:'📬 Send via:', langLabel:'🌐 Language / Langue :',
+    csvLabel:' Import my contacts (CSV)', csvInfo:'Compatible with Gmail, Outlook, Yahoo',
+    csvClear:'🗑️ Clear saved contacts',
+    favTitle:'⭐ Quick reply — My favourites',
+    fallbackLabel:'✏️ Manual input:', fallbackBtn:'✅ Submit',
+    installText:'📲 Install VocalMail on your home screen!', installBtn:'Install',
+    unsupported:'⚠️ Speech recognition unavailable. Use <strong>Chrome</strong> on Android or <strong>Safari</strong> on iPhone.',
+    numWords:{'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8},
+    say:{
+      welcome:(n)=>n>0?`Welcome to VocalMail. You have ${n} favourite${n>1?'s':''}. Say quick reply to use them, or press the button.`:'Welcome to VocalMail. Press the big button and say the recipient\'s name.',
+      listening:'Listening… speak now.',
+      noSpeech:'No speech detected. Please try again.',
+      micDenied:'Microphone access denied. Please allow it in Chrome settings.',
+      notFound:(t)=>`No contact found for ${t}. Please repeat the name.`,
+      multiple:(n,names)=>`I found ${n} contacts: ${names}. Say the number.`,
+      selected:(name)=>`Great! Recipient: ${name}. Now say the subject.`,
+      subjSaved:(s)=>`Subject: ${s}. Dictate your message, then say "done".`,
+      bodySaved:'Saved. Continue or say "done".',
+      bodyEmpty:'The message is empty. Please dictate your message first.',
+      summary:(to,subj)=>`Email ready. Recipient: ${to}. Subject: ${subj}. Say "send" or press the button.`,
+      sending:(name)=>`Opening your email app to send to ${name}.`,
+      copied:'Message copied. Open Gmail and paste the message.',
+      restart:'Let\'s start over. Say the recipient\'s name.',
+      skipMandatory:'The recipient is mandatory.',
+      quickEmpty:'No favourites yet. Choose a contact and say "add to favourites".',
+      quickList:(n,names)=>`Quick reply. ${n} favourite${n>1?'s':''}: ${names}. Say the number.`,
+      favAdded:(name,n)=>`${name} added to favourites. You now have ${n} favourite${n>1?'s':''}.`,
+      favRemoved:(name)=>`${name} removed from favourites.`,
+      favMax:'Maximum 8 favourites. Remove one before adding a new one.',
+      favAlready:(name)=>`${name} is already in your favourites.`,
+      favNotFound:(name)=>`${name} is not in your favourites.`,
+      noContact:'Please select a recipient first.',
+      notUnderstood:'I didn\'t understand. Please say the number.',
+      correcting:(field,ctx,prompt)=>`Correcting ${field}. ${ctx}${prompt}`,
+      fieldNames:{1:'recipient',2:'subject',3:'message'},
+      fieldPrompts:{1:'Say the new recipient\'s name.',2:'Say the new subject.',3:'Dictate your new message. Say "done" when finished.'},
+      contactsSaved:(n)=>`${n} contact${n>1?'s imported and saved':' imported and saved'}.`,
+      contactsReset:'Contacts reset.',
+      langChanged:'Language changed: English.',
+      mailClient:(l)=>`Mail client: ${l}.`,
+      confirmClear:'Say "confirm" to clear your imported contacts.',
+      cancelled:'Cancelled. Your contacts are kept.',
+      grpTitle:'👥 My groups',
+      grpCreate:'What is the name of this group?',
+      grpAddMember:(name)=>`${name} added to the group. Say another name, or "done" to finish.`,
+      grpNoMember:'No member found. Please repeat the name.',
+      grpSaved:(name,n)=>`Group "${name}" created with ${n} member${n>1?'s':''}.`,
+      grpEmpty:'No groups yet. Say "create a group" to start.',
+      grpList:(names)=>`Your groups: ${names}. Say the group name to use it.`,
+      grpSelected:(name,n,members)=>`Group "${name}" selected. ${n} recipient${n>1?'s':''}: ${members}.`,
+      grpNotFound:(name)=>`Group "${name}" not found.`,
+      grpDeleted:(name)=>`Group "${name}" deleted.`,
+      grpDeleteConfirm:(name)=>`Say "confirm" to delete group "${name}".`,
+      grpMemberExists:(name)=>`${name} is already in this group.`,
+    },
+    cmd:{
+      send:/^(send|submit)/,
+      restart:/^(restart|start over|reset|cancel all)/,
+      quick:/(quick reply|favourites|favorites|shortcut)/,
+      favAdd:/(add|save).*(favou?rite)/,
+      favRem:/(remove|delete|clear).*(favou?rite)/,
+      correctTo:/(change|correct|edit|modify).*(recipient|to|contact)/,
+      correctSubj:/(change|correct|edit|modify).*(subject|topic)/,
+      correctBody:/(change|correct|edit|modify).*(message|body|text)/,
+      reread:/^(read again|repeat|re-read|summary)/,
+      done:/^(done|finished|that's it|send now|complete|ok)$/,
+      confirm:/^(confirm|yes|clear)/,
+      grpCreate:/(create|new).*(group)/,
+      grpSend:/(send to group|group)\s+(\w+)/,
+      grpList:/(show|list|my).*(groups)/,
+      grpDelete:/(delete|remove|clear).*(group)/,
+    },
+    punctuation:(t)=>t.replace(/\bfull stop\b/g,'.').replace(/\bperiod\b/g,'.').replace(/\bcomma\b/g,',').replace(/\bexclamation mark\b/g,'!').replace(/\bquestion mark\b/g,'?').replace(/\bnew line\b/gi,'\n').replace(/\bcolon\b/g,':'),
+  },
+};
+
+// ════════════════════════════════════════════
+// CONTACTS & FAVORITES
+// ════════════════════════════════════════════
+const DEFAULT_CONTACTS=[
+  {name:'René Allet',email:'reneallet@yahoo.fr'},
+  {name:'Marie Dupont',email:'marie.dupont@example.com'},
+  {name:'Jean Martin',email:'jean.martin@example.com'},
+  {name:'Sophie Bernard',email:'sophie.bernard@example.com'},
+  {name:'Paul Lefebvre',email:'paul.lefebvre@example.com'},
+  {name:'Isabelle Moreau',email:'isabelle.moreau@example.com'},
+  {name:'Thomas Petit',email:'thomas.petit@example.com'},
+  {name:'Laura Simon',email:'laura.simon@example.com'},
+  {name:'Marc Durand',email:'marc.durand@example.com'},
+  {name:'Claire Rousseau',email:'claire.rousseau@example.com'},
+  {name:'Antoine Lambert',email:'antoine.lambert@example.com'},
+];
+
+function ls(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}}
+function lsSave(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(e){}}
+
+let CONTACTS=ls('vocalmail_contacts',null)||[...DEFAULT_CONTACTS];
+let FAVORITES=ls('vocalmail_favorites',[])||[];
+
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+const STATE={step:1,to:null,toEmail:null,subject:null,body:null};
+let recognition=null, isListening=false;
+const synthesis=window.speechSynthesis;
+let mailClient=ls('vocalmail_mail','gmail')||'gmail';
+let currentLang=ls('vocalmail_lang','fr')||'fr';
+let T=LANG[currentLang];
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+let speechAvail=false, waitingConfirm=false, deferredInstall=null;
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+const $=(id)=>document.getElementById(id);
+
+function setStatus(text,icon='🎤',cls=''){
+  $('status-text').innerHTML=text;
+  document.querySelector('.status-icon').textContent=icon;
+  $('status-bar').className=cls;
+  ariaAnnounce(text.replace(/<[^>]+>/g,''));
+}
+
+function ariaAnnounce(text){
+  const el=$('aria-live'); el.textContent='';
+  requestAnimationFrame(()=>{el.textContent=text;});
+}
+
+function speak(text,onEnd){
+  synthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang=T.code; utt.rate=0.92; utt.pitch=1.0;
+  const voices=synthesis.getVoices();
+  const voice=voices.find(v=>v.lang.startsWith(T.code.split('-')[0]));
+  if(voice) utt.voice=voice;
+  if(onEnd) utt.onend=onEnd;
+  synthesis.speak(utt);
+}
+
+function promptMic(delay=800){setTimeout(()=>{if(speechAvail&&!isListening)startListening();},delay);}
+
+// ════════════════════════════════════════════
+// UI
+// ════════════════════════════════════════════
+function applyUI(){
+  document.documentElement.lang=T.code.split('-')[0];
+  $('tagline').textContent=T.tagline;
+  $('status-text').textContent=T.statusInit;
+  $('mic-label').textContent=T.micIdle;
+  ['sl-1','sl-2','sl-3','sl-4'].forEach((id,i)=>{$(id).textContent=T.stepLabels[i];});
+  $('lbl-to').textContent=T.cardTo;
+  $('lbl-subject').textContent=T.cardSubject;
+  $('lbl-body').textContent=T.cardBody;
+  ['val-to','val-subject','val-body'].forEach(id=>{if($(id).classList.contains('placeholder'))$(id).textContent=T.waiting;});
+  $('lbl-quick').textContent=T.btnQuick;
+  $('lbl-restart').textContent=T.btnRestart;
+  $('lbl-skip').textContent=T.btnSkip;
+  $('lbl-copy').textContent=T.btnCopy;
+  $('lbl-send').textContent=T.btnSend;
+  $('mail-label').textContent=T.mailLabel;
+  $('lang-label').textContent=T.langLabel;
+  $('csv-label-text').textContent=T.csvLabel;
+  $('btn-clear-contacts').textContent=T.csvClear;
+  $('fav-title').textContent=T.favTitle;
+  $('fallback-label').textContent=T.fallbackLabel;
+  $('fallback-btn').textContent=T.fallbackBtn;
+  $('install-text').textContent=T.installText;
+  $('install-btn').textContent=T.installBtn;
+  $('tip-text').innerHTML=T.tips[STATE.step-1]||T.tips[0];
+  // CSV info
+  const saved=localStorage.getItem('vocalmail_contacts');
+  if(saved){try{const n=JSON.parse(saved).length;$('csv-info').textContent=`✅ ${n} — ${T.csvInfo}`;$('csv-info').className='ok';}catch(e){}}
+  else{$('csv-info').textContent=T.csvInfo;$('csv-info').className='';}
+  // Buttons state
+  document.querySelectorAll('[data-lang]').forEach(b=>{const a=b.dataset.lang===currentLang;b.classList.toggle('selected',a);b.setAttribute('aria-pressed',a?'true':'false');});
+  document.querySelectorAll('[data-client]').forEach(b=>{const a=b.dataset.client===mailClient;b.classList.toggle('selected',a);b.setAttribute('aria-pressed',a?'true':'false');});
+  if(recognition) recognition.lang=T.code;
+}
+
+// ════════════════════════════════════════════
+// LANGUAGE & MAIL CLIENT
+// ════════════════════════════════════════════
+function setLang(lang){
+  if(!LANG[lang]) return;
+  currentLang=lang; T=LANG[lang];
+  lsSave('vocalmail_lang',lang);
+  applyUI(); speak(T.say.langChanged);
+}
+
+function setMailClient(client){
+  mailClient=client; lsSave('vocalmail_mail',client);
+  document.querySelectorAll('[data-client]').forEach(b=>{const a=b.dataset.client===client;b.classList.toggle('selected',a);b.setAttribute('aria-pressed',a?'true':'false');});
+  speak(T.say.mailClient({gmail:'Gmail',outlook:'Outlook',yahoo:'Yahoo Mail',mailto:'Local'}[client]||client));
+}
+
+// ════════════════════════════════════════════
+// PWA
+// ════════════════════════════════════════════
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('install-banner').style.display='block';});
+window.addEventListener('appinstalled',()=>{$('install-banner').style.display='none';});
+function installPWA(){if(!deferredInstall)return;deferredInstall.prompt();deferredInstall.userChoice.then(()=>{deferredInstall=null;$('install-banner').style.display='none';});}
+
+// ════════════════════════════════════════════
+// RECOGNITION
+// ════════════════════════════════════════════
+function initRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    $('unsupported').style.display='block'; $('unsupported').innerHTML=T.unsupported;
+    $('text-fallback').classList.add('visible'); $('mic-btn').style.display='none'; return false;
+  }
+  speechAvail=true;
+  recognition=new SR();
+  recognition.lang=T.code; recognition.interimResults=true; recognition.maxAlternatives=3; recognition.continuous=false;
+  recognition.onstart=()=>{
+    isListening=true; $('mic-btn').className='recording'; $('mic-label').textContent=T.micListening;
+    setStatus(T.say.listening,'🔴','listening');
+  };
+  recognition.onerror=(e)=>{
+    stopListening();
+    if(e.error==='no-speech'){setStatus(T.say.noSpeech,'🔇');if(isMobile)$('text-fallback').classList.add('visible');}
+    else if(e.error==='not-allowed'){setStatus(T.say.micDenied,'🚫');speak(T.say.micDenied);$('text-fallback').classList.add('visible');}
+    else{setStatus(T.say.noSpeech,'⚠️');if(isMobile)$('text-fallback').classList.add('visible');}
+  };
+  recognition.onend=stopListening;
+  return true;
+}
+
+function startListening(){
+  if(isListening){recognition.stop();return;}
+  synthesis.cancel(); $('text-fallback').classList.remove('visible');
+  try{recognition.start();}catch(e){console.warn(e);}
+}
+
+function stopListening(){
+  isListening=false; $('transcript-live').textContent='';
+  $('mic-btn').className='idle'; $('mic-label').textContent=T.micIdle;
+  if($('status-bar').className==='listening') $('status-bar').className='';
+}
+
+function setupHandlers(){
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}
+    $('transcript-live').textContent=interim||final;
+    if(final) processVoice(final.trim().toLowerCase());
+  };
+}
+
+// ════════════════════════════════════════════
+// TEXT FALLBACK
+// ════════════════════════════════════════════
+function submitTextFallback(){
+  const val=$('text-input').value.trim(); if(!val) return;
+  $('text-input').value=''; processVoice(val.toLowerCase());
+}
+
+// ════════════════════════════════════════════
+// VOICE PROCESSING
+// ════════════════════════════════════════════
+function processVoice(text){
+  const cmd=T.cmd;
+
+  // Mode création de groupe en cours
+  if(grpCreationMode && grpPendingName){ handleGroupMember(text); return; }
+
+  if(waitingConfirm){
+    waitingConfirm=false;
+    cmd.confirm.test(text)?clearContacts(true):(speak(T.say.cancelled),setStatus(T.say.cancelled,'🎤'));
+    setupHandlers(); return;
+  }
+  if(cmd.restart.test(text))      {restart();return;}
+  if(cmd.send.test(text)&&STATE.step===4){sendMail();return;}
+  if(cmd.reread.test(text)&&STATE.step===4){readSummary();return;}
+  // Groupes
+  if(cmd.grpCreate.test(text))    {startGroupCreation();return;}
+  if(cmd.grpDelete.test(text))    {deleteGroupByVoice(text);return;}
+  if(cmd.grpList.test(text))      {listGroups();return;}
+  if((cmd.grpSend.test(text)||(text.includes('groupe')||text.includes('group')))&&STATE.step===1){trySelectGroupByVoice(text);return;}
+  // Favoris
+  if(cmd.quick.test(text))        {quickReply();return;}
+  if(cmd.favAdd.test(text))       {STATE.to&&STATE.toEmail?addFav({name:STATE.to,email:STATE.toEmail}):speak(T.say.noContact);return;}
+  if(cmd.favRem.test(text))       {STATE.to&&STATE.toEmail?removeFav({name:STATE.to,email:STATE.toEmail}):speak(T.say.noContact);return;}
+  // Corrections
+  if(cmd.correctTo.test(text))    {correctField(1);return;}
+  if(cmd.correctSubj.test(text))  {correctField(2);return;}
+  if(cmd.correctBody.test(text))  {correctField(3);return;}
+  switch(STATE.step){case 1:searchContact(text);break;case 2:saveSubject(text);break;case 3:saveBody(text);break;}
+}
+
+// ════════════════════════════════════════════
+// STEPS
+// ════════════════════════════════════════════
+function goToStep(n){
+  STATE.step=n;
+  for(let i=1;i<=4;i++){const node=$(`step-${i}`);node.className='step-node'+(i<n?' done':i===n?' active':'');node.setAttribute('aria-current',i===n?'step':'false');}
+  $('tip-text').innerHTML=T.tips[n-1]||T.tips[0];
+  ['card-to','card-subject','card-body'].forEach(id=>$(id).classList.remove('active-card'));
+  const cards={1:'card-to',2:'card-subject',3:'card-body'};
+  if(cards[n]) $(cards[n]).classList.add('active-card');
+}
+
+function markDone(n){$(`step-${n}`).className='step-node done';}
+
+// ════════════════════════════════════════════
+// CONTACT SEARCH
+// ════════════════════════════════════════════
+
+// Normalise les accents : "Éric" → "eric", "André" → "andre"
+function normalize(str){
+  return str.toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .trim();
+}
+
+function searchContact(text){
+  const query = normalize(text);
+  const words = query.split(/\s+/).filter(w => w.length > 0);
+
+  const matches = CONTACTS.filter(c => {
+    const cn = normalize(c.name);
+    const ce = c.email.toLowerCase();
+    // Correspondance si UN mot dicté est contenu dans le nom ou l'email
+    return words.some(w =>
+      w.length >= 2 && (cn.includes(w) || ce.includes(w))
+    ) || cn === query; // ou correspondance exacte
+  });
+
+  if(matches.length===0){
+    setStatus(`🔍 "${text}"`, '🔍');
+    speak(T.say.notFound(text));
+    promptMic(1800); return;
+  }
+  if(matches.length===1){selectContact(matches[0]);return;}
+  showContactList(matches);
+  speak(T.say.multiple(matches.length,matches.map((c,i)=>`${i+1} : ${c.name.split(' ')[0]}`).join(', ')));
+  setStatus(`👥 ${matches.length}`,'👥');
+}
+
+function showContactList(contacts){
+  const list=$('contacts-list'); list.innerHTML='';
+  contacts.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='contact-item'; btn.setAttribute('role','option'); btn.setAttribute('aria-label',`${c.name}, ${c.email}`);
+    btn.innerHTML=`<span aria-hidden="true">👤</span> <strong>${i+1}.</strong> ${c.name}<span class="contact-email">${c.email}</span>`;
+    btn.addEventListener('click',()=>selectContact(c));
+    list.appendChild(btn);
+  });
+  list.classList.add('visible');
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+    if(!final) return;
+    final=final.trim().toLowerCase();
+    const num=T.numWords[final]||parseInt(final);
+    if(num&&contacts[num-1]) selectContact(contacts[num-1]);
+    else{const match=contacts.find(c=>normalize(c.name).includes(normalize(final)));if(match)selectContact(match);else speak(T.say.notUnderstood);}
+    setupHandlers();
+  };
+}
+
+function selectContact(contact){
+  $('contacts-list').classList.remove('visible');
+  STATE.to=contact.name; STATE.toEmail=contact.email;
+  const el=$('val-to'); el.textContent=`${contact.name} (${contact.email})`; el.classList.remove('placeholder');
+  markDone(1); goToStep(2);
+  speak(T.say.selected(contact.name),()=>promptMic(300));
+  setStatus(`✅ ${contact.name}`,'✅');
+  setupHandlers();
+}
+
+// ════════════════════════════════════════════
+// SUBJECT & BODY
+// ════════════════════════════════════════════
+function saveSubject(text){
+  STATE.subject=text.charAt(0).toUpperCase()+text.slice(1);
+  const el=$('val-subject'); el.textContent=STATE.subject; el.classList.remove('placeholder');
+  markDone(2); goToStep(3);
+  speak(T.say.subjSaved(STATE.subject),()=>promptMic(400));
+  setStatus(`✅ ${STATE.subject}`,'✅');
+}
+
+function saveBody(text){
+  if(T.cmd.done.test(text)){
+    if(!STATE.body){speak(T.say.bodyEmpty);return;}
+    markDone(3); goToStep(4); readSummary(); return;
+  }
+  const msg=T.punctuation(text);
+  STATE.body=(STATE.body?STATE.body+' ':'')+msg;
+  const el=$('val-body'); el.textContent=STATE.body; el.classList.remove('placeholder');
+  setStatus('📝','📝');
+  speak(T.say.bodySaved,()=>promptMic(600));
+}
+
+// ════════════════════════════════════════════
+// SUMMARY & SEND
+// ════════════════════════════════════════════
+function readSummary(){
+  speak(T.say.summary(STATE.to,STATE.subject));
+  setStatus('✅','✅','success');
+  $('btn-send').disabled=false; $('btn-copy').disabled=false;
+  for(let i=1;i<=4;i++){$(`step-${i}`).className='step-node'+(i<4?' done':' active');$(`step-${i}`).setAttribute('aria-current',i===4?'step':'false');}
+  $('tip-text').innerHTML=T.tips[3];
+  ariaAnnounce(T.say.summary(STATE.to,STATE.subject));
+}
+
+function sendMail(){
+  if(!STATE.toEmail) return;
+  // Plusieurs destinataires séparés par des virgules
+  const emails=STATE.toEmail.split(',').map(e=>e.trim()).join(',');
+  const to=encodeURIComponent(emails);
+  const subject=encodeURIComponent(STATE.subject||'');
+  const body=encodeURIComponent(STATE.body||'');
+  let url;
+  if(isMobile){
+    // mailto: accepte plusieurs destinataires séparés par des virgules
+    url=`mailto:${emails}?subject=${STATE.subject||''}&body=${STATE.body||''}`;
+  }else{
+    switch(mailClient){
+      case 'gmail':   url=`https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;break;
+      case 'outlook': url=`https://outlook.live.com/mail/0/deeplink/compose?to=${to}&subject=${subject}&body=${body}`;break;
+      case 'yahoo':   url=`https://compose.mail.yahoo.com/?to=${to}&subject=${subject}&body=${body}`;break;
+      default:        url=`mailto:${emails}?subject=${STATE.subject||''}&body=${STATE.body||''}`;
+    }
+  }
+  speak(T.say.sending(STATE.to));
+  setStatus(`📤 ${STATE.to}…`,'📤','success');
+  window.location.href=url;
+}
+
+function copyMessage(){
+  const text=`${T.cardTo}: ${STATE.toEmail}\n${T.cardSubject}: ${STATE.subject}\n\n${STATE.body}`;
+  navigator.clipboard.writeText(text).then(()=>{
+    speak(T.say.copied); setStatus('📋','📋','success');
+    $('lbl-copy').textContent='✅';
+    setTimeout(()=>{$('lbl-copy').textContent=T.btnCopy;},3000);
+  }).catch(()=>setStatus('⚠️','⚠️'));
+}
+
+// ════════════════════════════════════════════
+// CORRECTION
+// ════════════════════════════════════════════
+function correctField(n){
+  const ids={1:'val-to',2:'val-subject',3:'val-body'};
+  if(n===1){STATE.to=null;STATE.toEmail=null;}
+  if(n===2){STATE.subject=null;}
+  if(n===3){STATE.body=null;}
+  const el=$(ids[n]); el.textContent=T.waiting; el.classList.add('placeholder');
+  $('btn-send').disabled=true; $('btn-copy').disabled=true;
+  goToStep(n);
+  const ctx=[];
+  if(n>1&&STATE.to)      ctx.push(`${T.cardTo} : ${STATE.to}`);
+  if(n>2&&STATE.subject) ctx.push(`${T.cardSubject} : ${STATE.subject}`);
+  const ctxStr=ctx.length>0?ctx.join(', ')+'. ':'';
+  speak(T.say.correcting(T.say.fieldNames[n],ctxStr,T.say.fieldPrompts[n]),()=>promptMic(400));
+  setStatus(`✏️ ${T.say.fieldNames[n]}`,'✏️');
+  setupHandlers();
+}
+
+// ════════════════════════════════════════════
+// RESTART / SKIP
+// ════════════════════════════════════════════
+function restart(){
+  STATE.step=1;STATE.to=null;STATE.toEmail=null;STATE.subject=null;STATE.body=null;
+  ['val-to','val-subject','val-body'].forEach(id=>{$(id).textContent=T.waiting;$(id).className='card-value placeholder';});
+  $('contacts-list').classList.remove('visible');
+  $('btn-send').disabled=true; $('btn-copy').disabled=true;
+  synthesis.cancel(); if(isListening) recognition?.stop();
+  goToStep(1); setStatus('🔄','🎤');
+  speak(T.say.restart,()=>promptMic(400));
+}
+
+function skipStep(){
+  if(STATE.step>=4) return;
+  if(STATE.step===1&&!STATE.to){speak(T.say.skipMandatory);return;}
+  goToStep(STATE.step+1);
+  speak(T.tips[STATE.step-1].replace(/<[^>]+>/g,''));
+}
+
+// ════════════════════════════════════════════
+// FAVORITES
+// ════════════════════════════════════════════
+function addFav(contact){
+  if(FAVORITES.find(f=>f.email===contact.email)){speak(T.say.favAlready(contact.name));return;}
+  if(FAVORITES.length>=8){speak(T.say.favMax);return;}
+  FAVORITES.push(contact); lsSave('vocalmail_favorites',FAVORITES); renderFavorites();
+  speak(T.say.favAdded(contact.name,FAVORITES.length));
+  setStatus(`⭐ ${contact.name}`,'⭐');
+}
+
+function removeFav(contact){
+  const idx=FAVORITES.findIndex(f=>f.email===contact.email);
+  if(idx===-1){speak(T.say.favNotFound(contact.name));return;}
+  FAVORITES.splice(idx,1); lsSave('vocalmail_favorites',FAVORITES); renderFavorites();
+  speak(T.say.favRemoved(contact.name));
+}
+
+function renderFavorites(){
+  const zone=$('favorites-zone'); const list=$('favorites-list');
+  if(FAVORITES.length===0){zone.style.display='none';return;}
+  zone.style.display='block'; list.innerHTML='';
+  FAVORITES.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='fav-btn'; btn.setAttribute('aria-label',`${T.say.fieldNames[1]} ${i+1} : ${f.name}`);
+    btn.textContent=`⭐ ${f.name.split(' ')[0]}`;
+    btn.addEventListener('click',()=>selectContact(f));
+    list.appendChild(btn);
+  });
+}
+
+function quickReply(){
+  if(FAVORITES.length===0){speak(T.say.quickEmpty);setStatus(T.say.quickEmpty,'⭐');return;}
+  const names=FAVORITES.map((f,i)=>`${i+1} : ${f.name.split(' ')[0]}`).join(', ');
+  speak(T.say.quickList(FAVORITES.length,names)); setStatus('⭐','⭐');
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+    if(!final) return;
+    final=final.trim().toLowerCase();
+    const num=T.numWords[final]||parseInt(final);
+    if(num&&FAVORITES[num-1]) selectContact(FAVORITES[num-1]);
+    else{const match=FAVORITES.find(f=>normalize(f.name).includes(normalize(final)));if(match)selectContact(match);else{speak(T.say.notUnderstood);promptMic(600);}}
+    setupHandlers();
+  };
+  promptMic(500);
+}
+
+// ════════════════════════════════════════════
+// GROUPS
+// ════════════════════════════════════════════
+let GROUPS = ls('vocalmail_groups', []) || [];
+let grpCreationMode = false;
+let grpPendingName  = null;
+let grpPendingMembers = [];
+let grpDeletePending = null;
+
+function saveGroups(){ lsSave('vocalmail_groups', GROUPS); }
+
+function renderGroups(){
+  const zone=$('groups-zone'), list=$('groups-list');
+  if(GROUPS.length===0){ zone.style.display='none'; return; }
+  zone.style.display='block'; list.innerHTML='';
+  GROUPS.forEach(g=>{
+    const btn=document.createElement('button');
+    btn.className='grp-btn';
+    btn.setAttribute('aria-label',`Groupe ${g.name} — ${g.members.length} membres`);
+    btn.textContent=`👥 ${g.name}`;
+    btn.addEventListener('click',()=>selectGroup(g));
+    list.appendChild(btn);
+  });
+}
+
+function selectGroup(group){
+  const emails=group.members.map(m=>m.email).join(', ');
+  const names=group.members.map(m=>m.name.split(' ')[0]).join(', ');
+  STATE.to=`Groupe : ${group.name}`; STATE.toEmail=emails;
+  const el=$('val-to');
+  el.textContent=`👥 ${group.name} (${group.members.length} membres)`;
+  el.classList.remove('placeholder');
+  markDone(1); goToStep(2);
+  speak(T.say.grpSelected(group.name,group.members.length,names),()=>promptMic(300));
+  setStatus(`👥 ${group.name}`,'👥');
+  setupHandlers();
+}
+
+function startGroupCreation(){
+  grpCreationMode=true; grpPendingName=null; grpPendingMembers=[];
+  speak(T.say.grpCreate); setStatus(T.say.grpCreate,'👥');
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+    if(!final) return; final=final.trim();
+    if(!grpPendingName){
+      grpPendingName=final.charAt(0).toUpperCase()+final.slice(1);
+      speak(`Groupe "${grpPendingName}". Dites le nom du premier membre. Dites "terminé" quand vous avez fini.`);
+      setStatus(`👥 "${grpPendingName}" — ajoutez des membres`,'👥');
+      promptMic(600);
+    } else { handleGroupMember(final.toLowerCase()); }
+  };
+  promptMic(600);
+}
+
+function handleGroupMember(text){
+  if(T.cmd.done.test(text)){
+    if(grpPendingMembers.length===0){ speak('Ajoutez au moins un membre.'); promptMic(800); return; }
+    const ng={name:grpPendingName,members:[...grpPendingMembers]};
+    const idx=GROUPS.findIndex(g=>normalize(g.name)===normalize(grpPendingName));
+    if(idx!==-1) GROUPS.splice(idx,1);
+    GROUPS.push(ng); saveGroups(); renderGroups();
+    grpCreationMode=false; grpPendingName=null; grpPendingMembers=[];
+    speak(T.say.grpSaved(ng.name,ng.members.length));
+    setStatus(`👥 ${ng.name}`,'✅','success'); setupHandlers(); return;
+  }
+  const words=text.split(/\s+/);
+  const matches=CONTACTS.filter(c=>{const cn=normalize(c.name);return words.some(w=>w.length>=2&&cn.includes(normalize(w)));});
+  if(matches.length===0){ speak(T.say.grpNoMember); promptMic(1000); return; }
+  const contact=matches[0];
+  if(grpPendingMembers.find(m=>m.email===contact.email)){ speak(T.say.grpMemberExists(contact.name)); promptMic(800); return; }
+  grpPendingMembers.push(contact);
+  speak(T.say.grpAddMember(contact.name));
+  setStatus(`👥 "${grpPendingName}" — ${grpPendingMembers.length} membre${grpPendingMembers.length>1?'s':''}`,'👥');
+  promptMic(600);
+}
+
+function listGroups(){
+  if(GROUPS.length===0){ speak(T.say.grpEmpty); return; }
+  const names=GROUPS.map((g,i)=>`${i+1} : ${g.name}`).join(', ');
+  speak(T.say.grpList(names)); setStatus(`👥 ${GROUPS.length}`,'👥');
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+    if(!final) return; final=final.trim().toLowerCase();
+    const num=T.numWords[final]||parseInt(final);
+    if(num&&GROUPS[num-1]){ selectGroup(GROUPS[num-1]); setupHandlers(); return; }
+    const match=GROUPS.find(g=>normalize(g.name).includes(normalize(final)));
+    if(match){ selectGroup(match); setupHandlers(); return; }
+    setupHandlers();
+  };
+  promptMic(500);
+}
+
+function deleteGroupByVoice(text){
+  const q=text.replace(/(supprimer|effacer|enlever|delete|remove|clear).*(groupe|group)\s*/i,'').trim();
+  const match=GROUPS.find(g=>normalize(g.name).includes(normalize(q))||normalize(q).includes(normalize(g.name)));
+  if(!match){ speak(T.say.grpNotFound(q||'?')); return; }
+  grpDeletePending=match.name;
+  speak(T.say.grpDeleteConfirm(match.name)); setStatus(T.say.grpDeleteConfirm(match.name),'⚠️');
+  if(!recognition) return;
+  recognition.onresult=(e)=>{
+    let final='';
+    for(let i=e.resultIndex;i<e.results.length;i++) if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+    if(!final) return; final=final.trim().toLowerCase();
+    if(T.cmd.confirm.test(final)){
+      const idx=GROUPS.findIndex(g=>g.name===grpDeletePending);
+      if(idx!==-1){ GROUPS.splice(idx,1); saveGroups(); renderGroups(); }
+      speak(T.say.grpDeleted(grpDeletePending)); setStatus(T.say.grpDeleted(grpDeletePending),'🎤');
+    } else { speak(T.say.cancelled); }
+    grpDeletePending=null; setupHandlers();
+  };
+  promptMic(600);
+}
+
+function trySelectGroupByVoice(text){
+  const q=text.replace(/(envoyer au groupe|send to group|groupe|group)\s*/i,'').trim();
+  if(!q){ listGroups(); return; }
+  const match=GROUPS.find(g=>normalize(g.name).includes(normalize(q))||normalize(q).includes(normalize(g.name)));
+  if(match) selectGroup(match); else speak(T.say.grpNotFound(q));
+}
+
+// ════════════════════════════════════════════
+// CSV
+// ════════════════════════════════════════════
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim()); if(lines.length<2) return [];
+  const sep=lines[0].includes(';')?';':',';
+  const headers=lines[0].split(sep).map(h=>h.replace(/["\r]/g,'').trim().toLowerCase());
+  const emailIdx=headers.findIndex(h=>['email','e-mail','mail','adresse','address','smtp'].some(k=>h.includes(k)));
+  const nameIdx=headers.findIndex(h=>['name','nom','display name','full name','nom complet','given name'].some(k=>h.includes(k)));
+  if(emailIdx===-1) return null;
+  const result=[];
+  for(let i=1;i<lines.length;i++){
+    const cols=lines[i].match(/(".*?"|[^,;]+)(?=[,;]|$)/g)||lines[i].split(sep);
+    const clean=c=>(c||'').replace(/["\r]/g,'').trim();
+    const email=clean(cols[emailIdx]); if(!email||!email.includes('@')) continue;
+    let name=nameIdx!==-1?clean(cols[nameIdx]):'';
+    const fi=headers.findIndex(h=>h.includes('first')||h.includes('prénom'));
+    const li=headers.findIndex(h=>h.includes('last')||h.includes('surname'));
+    if(!name&&fi!==-1&&li!==-1) name=[clean(cols[fi]),clean(cols[li])].filter(Boolean).join(' ');
+    if(!name) name=email.split('@')[0];
+    result.push({name,email});
+  }
+  return result;
+}
+
+function initCSVImport(){
+  $('csv-input').addEventListener('change',function(e){
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      const result=parseCSV(ev.target.result);
+      const info=$('csv-info');
+      if(!result){info.textContent='❌';info.className='err';return;}
+      if(result.length===0){info.textContent='⚠️';info.className='err';return;}
+      const existing=new Set(CONTACTS.map(c=>c.email.toLowerCase()));
+      CONTACTS.unshift(...result.filter(c=>!existing.has(c.email.toLowerCase())));
+      lsSave('vocalmail_contacts',CONTACTS);
+      info.textContent=`✅ ${result.length}`;info.className='ok';
+      speak(T.say.contactsSaved(result.length));
+    };
+    reader.readAsText(file,'UTF-8');
+  });
+}
+
+function clearContacts(confirmed=false){
+  if(!confirmed){
+    speak(T.say.confirmClear); setStatus(T.say.confirmClear,'⚠️');
+    waitingConfirm=true; promptMic(800); return;
+  }
+  try{localStorage.removeItem('vocalmail_contacts');}catch(e){}
+  CONTACTS.length=0; CONTACTS.push(...DEFAULT_CONTACTS);
+  $('csv-info').textContent=T.csvInfo; $('csv-info').className='';
+  speak(T.say.contactsReset); setStatus(T.say.contactsReset,'🎤');
+}
+
+// ════════════════════════════════════════════
+// SERVICE WORKER
+// ════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e));});
+}
+
+// ════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════
+window.addEventListener('load',()=>{
+  initRecognition();
+  initCSVImport();
+  setupHandlers();
+  renderFavorites();
+  renderGroups();
+  applyUI();
+
+  $('mic-btn').addEventListener('click',startListening);
+  $('text-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitTextFallback();});
+  document.addEventListener('keydown',e=>{
+    if(e.code==='Space'&&!['BUTTON','INPUT'].includes(e.target.tagName)){e.preventDefault();startListening();}
+  });
+
+  synthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>synthesis.getVoices();
+
+  goToStep(1);
+  setTimeout(()=>{speak(T.say.welcome(FAVORITES.length),()=>promptMic(400));},700);
+});
+</script>
+</body>
+</html>
