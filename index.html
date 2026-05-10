@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>VocalMail V2 - Accessibilité</title>
+<style>
+:root{--bg:#0a0f1e;--surface:#111827;--surface2:#1a2440;--accent:#38bdf8;--accent2:#818cf8;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--text:#f0f6ff;--muted:#6b7280;--border:rgba(56,189,248,0.18);--glow:0 0 32px rgba(56,189,248,0.18);--radius:18px;}
+body{font-family:sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;}
+#voice-toggle-btn{width:100%;max-width:600px;background:rgba(129,140,248,0.1);border:1.5px solid var(--accent2);color:var(--accent2);padding:1rem;border-radius:12px;margin-bottom:1rem;font-weight:700;cursor:pointer;}
+#voice-toggle-btn.off{border-color:var(--muted);color:var(--muted);}
+#status-bar{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem;box-shadow:var(--glow);text-align:center;}
+.card{width:100%;max-width:600px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:0.8rem;}
+.card-label{font-size:0.8rem;color:var(--accent);margin-bottom:0.4rem;}
+#mic-btn{width:100%;max-width:600px;padding:2rem;font-size:1.4rem;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;margin-bottom:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;}
+#mic-btn.recording{background:var(--red);color:#fff;animation:pulse 1s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(248,113,113,0.7);}70%{box-shadow:0 0 0 20px rgba(248,113,113,0);}100%{box-shadow:0 0 0 0 rgba(248,113,113,0);}}
+.btn-send{width:100%;max-width:600px;padding:1rem;background:var(--green);color:#000;border:none;border-radius:12px;font-weight:700;cursor:pointer;}
+.btn-send:disabled{opacity:0.3;}
+#aria-announce{position:absolute;left:-9999px;}
+</style>
+</head>
+<body>
+
+<div id="aria-announce" aria-live="assertive" aria-atomic="true"></div>
+
+<button id="voice-toggle-btn" onclick="toggleVoice()">
+  🔊 Voix interne : ACTIVÉE
+</button>
+
+<div id="launch-screen" style="width:100%;max-width:600px;">
+  <button id="launch-btn" onclick="launchApp()" style="width:100%;padding:2rem;border-radius:18px;font-weight:700;font-size:1.5rem;cursor:pointer;">
+    🎙️ DÉMARRER VOCALMAIL
+  </button>
+</div>
+
+<div id="main-app" style="display:none;width:100%;max-width:600px;">
+  <div id="status-bar"><span id="status-text">Prêt</span></div>
+
+  <div class="card">
+    <div class="card-label">👤 À</div>
+    <div id="val-to">En attente...</div>
+  </div>
+  <div class="card">
+    <div class="card-label">📝 OBJET</div>
+    <div id="val-subject">En attente...</div>
+  </div>
+  <div class="card">
+    <div class="card-label">✉️ MESSAGE</div>
+    <div id="val-body">En attente...</div>
+  </div>
+
+  <button id="mic-btn" onclick="startListening()">🎙️ PARLER</button>
+  <button id="btn-send" class="btn-send" onclick="sendMail()" disabled>📤 ENVOYER LE MAIL</button>
+</div>
+
+<script>
+let useInternalVoice = true;
+const synth = window.speechSynthesis;
+let recognition = null, isListening = false;
+const STATE = {step: 1, to: "", toEmail: "", subject: "", body: ""};
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playTone(freq, duration) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  gain.gain.value = 0.1;
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(); osc.stop(audioCtx.currentTime + duration);
+}
+
+function notifyMicStart() { playTone(800, 0.1); if(navigator.vibrate) navigator.vibrate(50); }
+function notifyMicStop() { playTone(400, 0.15); if(navigator.vibrate) navigator.vibrate([50, 50]); }
+
+function toggleVoice() {
+  useInternalVoice = !useInternalVoice;
+  const btn = document.getElementById('voice-toggle-btn');
+  btn.textContent = useInternalVoice ? "🔊 Voix interne : ACTIVÉE" : "🔈 Voix interne : DÉSACTIVÉE (Mode TalkBack)";
+  btn.classList.toggle('off', !useInternalVoice);
+  ariaAssert(useInternalVoice ? "Voix interne activée" : "Voix interne désactivée.");
+}
+
+function ariaAssert(t) { 
+  document.getElementById('aria-announce').textContent = t; 
+}
+
+function speak(text, onEnd) {
+  ariaAssert(text);
+  if (!useInternalVoice) { if(onEnd) setTimeout(onEnd, 1000); return; }
+  synth.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'fr-FR';
+  if(onEnd) utt.onend = onEnd;
+  synth.speak(utt);
+}
+
+function launchApp() {
+  document.getElementById('launch-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  speak("Bienvenue. À qui voulez-vous envoyer un mail ?", () => startListening());
+}
+
+function initRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.onstart = () => { isListening = true; notifyMicStart(); document.getElementById('mic-btn').classList.add('recording'); };
+  recognition.onend = () => { isListening = false; notifyMicStop(); document.getElementById('mic-btn').classList.remove('recording'); };
+  recognition.onresult = e => {
+    const text = e.results[0][0].transcript;
+    processVoice(text);
+  };
+}
+
+function startListening() {
+  if(isListening) return;
+  synth.cancel();
+  recognition.start();
+}
+
+function processVoice(text) {
+  if(text.toLowerCase().includes("envoyer") && STATE.step === 4) { sendMail(); return; }
+  
+  switch(STATE.step) {
+    case 1:
+      STATE.to = text; STATE.toEmail = text.replace(/ /g,'.').toLowerCase() + "@example.com";
+      document.getElementById('val-to').textContent = text;
+      STATE.step = 2;
+      speak("Destinataire enregistré : " + text + ". Quel est l'objet du mail ?", () => startListening());
+      break;
+    case 2:
+      STATE.subject = text;
+      document.getElementById('val-subject').textContent = text;
+      STATE.step = 3;
+      speak("Objet enregistré. Maintenant, dictez votre message.", () => startListening());
+      break;
+    case 3:
+      STATE.body = text;
+      document.getElementById('val-body').textContent = text;
+      STATE.step = 4;
+      document.getElementById('btn-send').disabled = false;
+      speak("Message enregistré. Dites ENVOYER pour confirmer l'envoi.", () => startListening());
+      break;
+  }
+}
+
+function sendMail() {
+  speak("Ouverture de la messagerie...");
+  setTimeout(() => {
+    window.location.href = `mailto:${STATE.toEmail}?subject=${encodeURIComponent(STATE.subject)}&body=${encodeURIComponent(STATE.body)}`;
+  }, 1000);
+}
+
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.setActionHandler('play', () => startListening());
+}
+
+window.onload = initRecognition;
+</script>
+</body>
+</html>
